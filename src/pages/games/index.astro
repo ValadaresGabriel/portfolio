@@ -1,0 +1,100 @@
+---
+import Base from '../../layouts/Base.astro';
+import GameCard from '../../components/GameCard.astro';
+import { t } from '../../i18n/en';
+import { AREAS, getGames } from '../../lib/content';
+
+const games = await getGames();
+const filters = [{ id: 'all', label: t.games.all }, ...AREAS.map((a) => ({ id: a, label: t.areaShort[a] }))];
+---
+
+<Base title={t.games.title} description={t.games.intro}>
+  <section class="container section">
+    <h1>{t.games.title}</h1>
+    <p class="muted intro">{t.games.intro}</p>
+
+    <div class="filters" role="group" aria-label={t.games.filterLabel}>
+      {
+        filters.map((f) => (
+          <button type="button" class="filter" data-filter={f.id} data-area={f.id} aria-pressed={f.id === 'all' ? 'true' : 'false'}>
+            {f.label}
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="grid" id="games">
+      {games.map((game) => <GameCard game={game} />)}
+    </div>
+    <p class="muted empty" id="empty" hidden>{t.games.empty}</p>
+  </section>
+</Base>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter');
+  const cards = document.querySelectorAll<HTMLElement>('#games .game');
+  const empty = document.getElementById('empty')!;
+
+  function apply(filter: string) {
+    let shown = 0;
+    cards.forEach((card) => {
+      const match = filter === 'all' || (card.dataset.areas ?? '').split(' ').includes(filter);
+      card.hidden = !match;
+      if (match) shown++;
+    });
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === filter)));
+    empty.hidden = shown > 0;
+  }
+
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => {
+      const filter = b.dataset.filter!;
+      apply(filter);
+      const url = new URL(location.href);
+      if (filter === 'all') url.searchParams.delete('area');
+      else url.searchParams.set('area', filter);
+      history.replaceState(null, '', url);
+    }),
+  );
+
+  const initial = new URLSearchParams(location.search).get('area');
+  if (initial && [...buttons].some((b) => b.dataset.filter === initial)) apply(initial);
+</script>
+
+<style>
+  .intro {
+    font-size: 1.1rem;
+    margin-bottom: 24px;
+  }
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .filter {
+    font: inherit;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .filter:hover {
+    border-color: var(--c);
+    color: var(--text);
+  }
+  .filter[aria-pressed='true'] {
+    border-color: var(--c);
+    color: var(--c);
+    background: color-mix(in srgb, var(--c) 12%, var(--surface));
+  }
+  .empty {
+    padding: 24px 0;
+  }
+  :global(.game[hidden]) {
+    display: none;
+  }
+</style>

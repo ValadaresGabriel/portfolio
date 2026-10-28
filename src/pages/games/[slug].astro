@@ -1,0 +1,185 @@
+---
+import Base from '../../layouts/Base.astro';
+import AreaSection from '../../components/AreaSection.astro';
+import { t } from '../../i18n/en';
+import { gameAreas, getGames, youtubeId, type Game } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const games = await getGames();
+  return games.map((game) => ({ params: { slug: game.id }, props: { game } }));
+}
+
+interface Props {
+  game: Game;
+}
+
+const { game } = Astro.props;
+const g = game.data;
+const areas = gameAreas(game);
+const trailerId = youtubeId(g.links.trailer);
+
+const facts = [
+  { label: t.game.role, value: g.role },
+  { label: t.game.type, value: t.type[g.type] },
+  { label: t.game.status, value: t.status[g.status] },
+  { label: t.game.period, value: g.period },
+  { label: t.game.team, value: g.teamSize ? t.game.people(g.teamSize) : undefined },
+  { label: t.game.genre, value: g.genre },
+  { label: t.game.platforms, value: g.platforms.join(', ') || undefined },
+  { label: t.game.engine, value: g.engine },
+].filter((f) => f.value);
+---
+
+<Base title={g.title} description={g.pitch} image={g.cover}>
+  <article class="container section">
+    <a class="back" href="/games/">← {t.game.back}</a>
+
+    <header class="top">
+      <img class="cover" src={g.cover} alt="" width="1200" height="675" />
+      <div class="intro">
+        <ul class="chips">
+          {areas.map((a) => <li><a class="area-badge" data-area={a} href={`#${a}`}>{t.areaShort[a]}</a></li>)}
+        </ul>
+        <h1>{g.title}</h1>
+        <p class="pitch">{g.pitch}</p>
+        {g.description && <p class="muted">{g.description}</p>}
+        <div class="btn-row">
+          {g.links.play && <a class="btn btn-primary" href={g.links.play} target="_blank" rel="noopener">{t.game.play} ↗</a>}
+          {g.links.trailer && !trailerId && <a class="btn" href={g.links.trailer} target="_blank" rel="noopener">{t.game.trailer} ↗</a>}
+          {g.links.repo && <a class="btn" href={g.links.repo} target="_blank" rel="noopener">{t.game.repo} ↗</a>}
+        </div>
+      </div>
+    </header>
+
+    <dl class="facts card">
+      {
+        facts.map((f) => (
+          <div>
+            <dt>{f.label}</dt>
+            <dd>{f.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    {
+      trailerId && (
+        <div class="trailer">
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${trailerId}`}
+            title={`${g.title}: ${t.game.trailer}`}
+            loading="lazy"
+            allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          />
+        </div>
+      )
+    }
+
+    <div class="areas">
+      {areas.map((area) => <AreaSection game={game} area={area} />)}
+    </div>
+
+    {
+      g.gallery.length > 0 && (
+        <section class="gallery" aria-labelledby="gallery">
+          <h2 id="gallery">{t.game.gallery}</h2>
+          <div class="grid">
+            {g.gallery.map((item) => (
+              <figure>
+                <a href={item.image} target="_blank" rel="noopener">
+                  <img src={item.image} alt={item.caption ?? ''} loading="lazy" />
+                </a>
+                {item.caption && <figcaption class="muted">{item.caption}</figcaption>}
+              </figure>
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </article>
+</Base>
+
+<style>
+  .back {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back:hover {
+    color: var(--text);
+  }
+  .top {
+    display: grid;
+    gap: 28px;
+    align-items: center;
+  }
+  @media (min-width: 860px) {
+    .top {
+      grid-template-columns: 1.1fr 1fr;
+    }
+  }
+  .cover {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .intro .chips {
+    margin-bottom: 12px;
+  }
+  .intro .area-badge {
+    text-decoration: none;
+  }
+  .pitch {
+    font-size: 1.15rem;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr));
+    gap: 16px 24px;
+    padding: 20px 24px;
+    margin: 32px 0;
+  }
+  dt {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .trailer {
+    aspect-ratio: 16 / 9;
+    margin-bottom: 32px;
+  }
+  .trailer iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: var(--radius);
+  }
+  .areas {
+    display: grid;
+    gap: 24px;
+  }
+  .gallery {
+    margin-top: 40px;
+  }
+  figure {
+    margin: 0;
+  }
+  figure img {
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    width: 100%;
+  }
+  figcaption {
+    font-size: 0.85rem;
+    margin-top: 6px;
+  }
+</style>

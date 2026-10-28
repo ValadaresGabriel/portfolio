@@ -1,0 +1,62 @@
+---
+import { t } from '../i18n/en';
+import { gameAreas, type Game } from '../lib/content';
+
+interface Props {
+  game: Game;
+}
+
+const { game } = Astro.props;
+const { title, cover, pitch, role, status } = game.data;
+const areas = gameAreas(game);
+---
+
+<article class="game card" data-areas={areas.join(' ')}>
+  <a href={`/games/${game.id}/`} class="link">
+    <img src={cover} alt="" loading="lazy" width="1200" height="675" />
+    <div class="body">
+      <ul class="chips badges" aria-label="Areas">
+        {areas.map((a) => <li class="area-badge" data-area={a}>{t.areaShort[a]}</li>)}
+      </ul>
+      <h3>{title}</h3>
+      <p class="pitch">{pitch}</p>
+      <p class="meta muted">{role} · {t.status[status]}</p>
+    </div>
+  </a>
+</article>
+
+<style>
+  .game {
+    overflow: hidden;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .game:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+  }
+  .link {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+    height: 100%;
+  }
+  img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: var(--surface-2);
+  }
+  .body {
+    padding: 16px 18px 18px;
+  }
+  .badges {
+    margin-bottom: 10px;
+  }
+  .pitch {
+    margin-bottom: 0.6em;
+  }
+  .meta {
+    font-size: 0.85rem;
+    margin: 0;
+  }
+</style>

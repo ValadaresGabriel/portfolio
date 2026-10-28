@@ -1,0 +1,256 @@
+---
+import { Code } from 'astro:components';
+import { t } from '../i18n/en';
+import type { Area, Game } from '../lib/content';
+
+interface Props {
+  game: Game;
+  area: Area;
+}
+
+const { game, area } = Astro.props;
+const d = game.data;
+// Narrow the union so area-specific fields are typed.
+const prod = area === 'production' ? d.production : undefined;
+const narr = area === 'narrative' ? d.narrative : undefined;
+const prog = area === 'programming' ? d.programming : undefined;
+const base = (prod ?? narr ?? prog)!;
+---
+
+<section class="area card" data-area={area} id={area}>
+  <header>
+    <span class="area-badge" data-area={area}>{t.areaShort[area]}</span>
+    <h2>{t.areas[area]}</h2>
+    {base.contribution && <p class="lead">{base.contribution}</p>}
+  </header>
+
+  <div class="cols">
+    {
+      base.responsibilities.length > 0 && (
+        <div>
+          <h3>{t.game.responsibilities}</h3>
+          <ul>{base.responsibilities.map((r) => <li>{r}</li>)}</ul>
+        </div>
+      )
+    }
+    {
+      base.highlights.length > 0 && (
+        <div>
+          <h3>{t.game.highlights}</h3>
+          <ul class="highlights">{base.highlights.map((h) => <li>{h}</li>)}</ul>
+        </div>
+      )
+    }
+  </div>
+
+  {
+    prod && (prod.methodology || prod.teamManaged) && (
+      <dl class="facts">
+        {prod.methodology && (
+          <div>
+            <dt>{t.game.methodology}</dt>
+            <dd>{prod.methodology}</dd>
+          </div>
+        )}
+        {prod.teamManaged && (
+          <div>
+            <dt>{t.game.teamManaged}</dt>
+            <dd>{t.game.people(prod.teamManaged)}</dd>
+          </div>
+        )}
+      </dl>
+    )
+  }
+  {
+    prod && prod.documents.length > 0 && (
+      <div>
+        <h3>{t.game.documents}</h3>
+        <div class="btn-row">
+          {prod.documents.map((doc) => (
+            <a class="btn" href={doc.url} target="_blank" rel="noopener">
+              {doc.label} ↗
+            </a>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  {
+    narr?.structure && (
+      <dl class="facts">
+        <div>
+          <dt>{t.game.structure}</dt>
+          <dd>{narr.structure}</dd>
+        </div>
+      </dl>
+    )
+  }
+  {
+    narr?.scriptExcerpt && (
+      <div>
+        <h3>{t.game.scriptExcerpt}</h3>
+        <blockquote class="script">{narr.scriptExcerpt}</blockquote>
+      </div>
+    )
+  }
+  {
+    narr?.scriptLink && (
+      <p>
+        <a class="btn" href={narr.scriptLink} target="_blank" rel="noopener">
+          {t.game.scriptLink} ↗
+        </a>
+      </p>
+    )
+  }
+
+  {
+    prog && (prog.systems.length > 0 || prog.languages.length > 0) && (
+      <div class="cols">
+        {prog.systems.length > 0 && (
+          <div>
+            <h3>{t.game.systems}</h3>
+            <ul>{prog.systems.map((s) => <li>{s}</li>)}</ul>
+          </div>
+        )}
+        {prog.languages.length > 0 && (
+          <div>
+            <h3>{t.game.languages}</h3>
+            <ul class="chips">{prog.languages.map((l) => <li class="chip">{l}</li>)}</ul>
+          </div>
+        )}
+      </div>
+    )
+  }
+  {
+    prog?.challenge && (
+      <div>
+        <h3>{t.game.challenge}</h3>
+        <p>{prog.challenge}</p>
+      </div>
+    )
+  }
+  {
+    prog?.codeSnippet && (
+      <div>
+        <h3>{t.game.code}</h3>
+        <Code code={prog.codeSnippet} lang={prog.codeLanguage} theme="github-dark" />
+      </div>
+    )
+  }
+
+  {
+    base.tools.length > 0 && (
+      <div>
+        <h3>{t.game.tools}</h3>
+        <ul class="chips">{base.tools.map((tool) => <li class="chip">{tool}</li>)}</ul>
+      </div>
+    )
+  }
+
+  {
+    base.evidence.length > 0 && (
+      <div>
+        <h3>{t.game.evidence}</h3>
+        <ul class="evidence">
+          {base.evidence.map((e) => (
+            <li>
+              {e.image && (
+                <a href={e.url ?? e.image} target="_blank" rel="noopener">
+                  <img src={e.image} alt={e.caption ?? ''} loading="lazy" />
+                </a>
+              )}
+              {!e.image && e.url && (
+                <a href={e.url} target="_blank" rel="noopener">
+                  {e.caption ?? e.url} ↗
+                </a>
+              )}
+              {e.image && e.caption && <span class="muted">{e.caption}</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .area {
+    padding: 24px;
+    display: grid;
+    gap: 22px;
+    border-top: 3px solid var(--c);
+    min-width: 0;
+  }
+  /* Let wide code blocks scroll inside the card instead of widening the page. */
+  .area > * {
+    min-width: 0;
+  }
+  header h2 {
+    margin-top: 10px;
+  }
+  .lead {
+    font-size: 1.08rem;
+    margin: 0;
+  }
+  h3 {
+    color: var(--c);
+    font-size: 0.95rem;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  ul:not(.chips):not(.evidence) {
+    margin: 0;
+    padding-left: 1.2em;
+  }
+  .highlights li::marker {
+    content: '★  ';
+    color: var(--c);
+  }
+  .cols {
+    display: grid;
+    gap: 22px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+    margin: 0;
+  }
+  dt {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .script {
+    margin: 0;
+    padding: 14px 18px;
+    border-left: 3px solid var(--c);
+    background: var(--surface-2);
+    border-radius: 0 10px 10px 0;
+    white-space: pre-wrap;
+    font-family: var(--mono);
+    font-size: 0.9rem;
+  }
+  .evidence {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  }
+  .evidence img {
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: 6px;
+  }
+  .evidence span {
+    font-size: 0.85rem;
+  }
+</style>

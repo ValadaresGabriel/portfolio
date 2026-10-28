@@ -1,0 +1,122 @@
+---
+import '../styles/global.css';
+import { t } from '../i18n/en';
+import { getProfile } from '../lib/content';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const profile = await getProfile();
+const { name, title: role, shortBio, photo } = profile.data;
+const { title, description = shortBio, image = photo } = Astro.props;
+
+const pageTitle = title ? `${title} · ${name}` : `${name} · ${role}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = image ? new URL(image, Astro.site).href : undefined;
+const path = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400&family=Space+Grotesk:wght@600;700&display=swap"
+    />
+  </head>
+  <body>
+    <a class="skip visually-hidden" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="container bar">
+        <a class="brand" href="/">{name}</a>
+        <nav aria-label="Main">
+          <a href="/" aria-current={path === '/' ? 'page' : undefined}>{t.nav.home}</a>
+          <a href="/games/" aria-current={path.startsWith('/games') ? 'page' : undefined}>{t.nav.games}</a>
+          <a href="/#contact">{t.nav.contact}</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container bar">
+        <span>© {new Date().getFullYear()} {name}</span>
+        <span class="muted">{t.footer.built}</span>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 60px;
+  }
+  .brand {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  nav {
+    display: flex;
+    gap: 18px;
+  }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+  nav a:hover,
+  nav a[aria-current='page'] {
+    color: var(--text);
+  }
+  .site-footer {
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+    font-size: 0.85rem;
+  }
+  .skip:focus {
+    position: fixed;
+    left: 12px;
+    top: 12px;
+    width: auto;
+    height: auto;
+    clip: auto;
+    padding: 8px 12px;
+    background: var(--accent);
+    color: #000;
+    z-index: 20;
+  }
+</style>

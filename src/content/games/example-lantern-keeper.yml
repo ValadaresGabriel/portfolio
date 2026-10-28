@@ -1,0 +1,47 @@
+# EXAMPLE CONTENT: replace or delete through /admin.
+title: "Example: Lantern Keeper"
+cover: /uploads/example-cover-2.svg
+pitch: A cozy puzzle game about relighting a lighthouse, one memory at a time.
+description: Fictional example project with only two areas filled, to show that empty areas are hidden.
+type: personal
+status: in-development
+period: 2025 – present
+role: Solo developer
+teamSize: 1
+genre: Puzzle
+platforms: [PC]
+engine: Godot
+links:
+  play: ""
+  trailer: ""
+  repo: https://github.com/
+gallery: []
+featured: true
+order: 2
+narrative:
+  contribution: Designed a story told only through objects and light, with no dialogue.
+  responsibilities:
+    - Environmental storytelling across 12 rooms
+  highlights:
+    - Playtesters reconstructed the story without any text
+  tools: [Miro]
+  evidence: []
+  structure: Environmental, non-linear
+programming:
+  contribution: Wrote the light-propagation puzzle system and a level editor tool.
+  responsibilities:
+    - Light and mirror puzzle logic
+    - In-editor tool for building levels
+  highlights: []
+  tools: [Godot]
+  evidence: []
+  systems:
+    - Raycast light propagation
+    - Custom level editor plugin
+  languages: [GDScript]
+  codeSnippet: |
+    func propagate(from: Vector2, dir: Vector2) -> void:
+        var hit := _cast(from, dir)
+        if hit and hit.collider.is_in_group("mirror"):
+            propagate(hit.position, dir.bounce(hit.normal))
+  codeLanguage: gdscript

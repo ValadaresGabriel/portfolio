@@ -1,0 +1,178 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import GameCard from '../components/GameCard.astro';
+import { t } from '../i18n/en';
+import { AREAS, getGames, getProfile } from '../lib/content';
+
+const profile = await getProfile();
+const p = profile.data;
+const { Content: About } = await render(profile);
+const featured = (await getGames()).filter((g) => g.data.featured);
+---
+
+<Base>
+  <section class="hero container section">
+    {p.photo && <img class="photo" src={p.photo} alt={p.name} width="160" height="160" />}
+    <div>
+      {p.openToWork && <p class="open"><span class="dot"></span>{t.home.openToWork}</p>}
+      <h1>{p.name}</h1>
+      <p class="role">{p.title}</p>
+      <p class="bio">{p.shortBio}</p>
+      {p.location && <p class="muted loc">📍 {p.location}</p>}
+      <div class="btn-row">
+        <a class="btn btn-primary" href="#contact">{t.home.contact}</a>
+        {p.cv && <a class="btn" href={p.cv} download>{t.home.downloadCv} ↓</a>}
+      </div>
+    </div>
+  </section>
+
+  <section class="container section" aria-labelledby="what">
+    <p class="eyebrow">{t.home.whatIDo}</p>
+    <h2 id="what" class="visually-hidden">{t.home.whatIDo}</h2>
+    <div class="areas">
+      {
+        AREAS.map((area) => (
+          <a class="area card" data-area={area} href={`/games/?area=${area}`}>
+            <span class="area-badge" data-area={area}>{t.areaShort[area]}</span>
+            <h3>{t.areas[area]}</h3>
+            {p.areas[area].summary && <p>{p.areas[area].summary}</p>}
+            {p.areas[area].tools.length > 0 && (
+              <ul class="chips">{p.areas[area].tools.map((tool) => <li class="chip">{tool}</li>)}</ul>
+            )}
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  {
+    featured.length > 0 && (
+      <section class="container section" aria-labelledby="featured">
+        <div class="head">
+          <h2 id="featured">{t.home.featured}</h2>
+          <a href="/games/">{t.home.allGames} →</a>
+        </div>
+        <div class="grid">
+          {featured.map((game) => <GameCard game={game} />)}
+        </div>
+      </section>
+    )
+  }
+
+  <section class="container section about" aria-labelledby="about">
+    <h2 id="about">{t.home.about}</h2>
+    <div class="prose"><About /></div>
+  </section>
+
+  <section class="container section" id="contact" aria-labelledby="contact-title">
+    <div class="contact card">
+      <h2 id="contact-title">{t.home.contact}</h2>
+      {p.lookingFor && <p class="muted">{p.lookingFor}</p>}
+      <p><a class="email" href={`mailto:${p.email}`}>{p.email}</a></p>
+      <div class="btn-row">
+        {p.links.map((l) => <a class="btn" href={l.url} target="_blank" rel="noopener">{l.label} ↗</a>)}
+        {p.cv && <a class="btn btn-primary" href={p.cv} download>{t.home.downloadCv} ↓</a>}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    display: grid;
+    gap: 28px;
+    align-items: center;
+    padding-top: 72px;
+  }
+  @media (min-width: 720px) {
+    .hero {
+      grid-template-columns: auto 1fr;
+    }
+  }
+  .photo {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--border);
+  }
+  .open {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+  h1 {
+    margin-bottom: 0.15em;
+  }
+  .role {
+    font-family: var(--display);
+    font-size: 1.25rem;
+    color: var(--muted);
+  }
+  .bio {
+    font-size: 1.1rem;
+    max-width: 60ch;
+  }
+  .loc {
+    font-size: 0.9rem;
+  }
+  .areas {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  }
+  .area {
+    padding: 22px;
+    color: inherit;
+    text-decoration: none;
+    border-top: 3px solid var(--c);
+    transition: transform 0.15s;
+  }
+  .area:hover {
+    transform: translateY(-3px);
+  }
+  .area h3 {
+    margin-top: 12px;
+    font-size: 1.25rem;
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .head h2 {
+    margin: 0;
+  }
+  .about .prose {
+    max-width: 70ch;
+    font-size: 1.05rem;
+  }
+  .contact {
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .contact .btn-row {
+    justify-content: center;
+  }
+  .email {
+    font-family: var(--display);
+    font-size: clamp(1.1rem, 4vw, 1.6rem);
+    font-weight: 700;
+  }
+</style>

@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"Se esta mensagem for um pedido de tarefa, siga a skill perguntar-grill antes de começar.\"}}'"
+          }
+        ]
+      }
+    ]
+  }
+}

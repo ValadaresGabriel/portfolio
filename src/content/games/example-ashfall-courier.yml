@@ -1,0 +1,84 @@
+# EXAMPLE CONTENT: replace or delete through /admin.
+title: "Example: Ashfall Courier"
+cover: /uploads/example-cover-1.svg
+pitch: A delivery game about crossing a volcanic city before the ash buries the last road.
+description: Fictional example project used to preview the layout. Every area is filled so you can see all sections.
+type: game-jam
+status: released
+period: "2025"
+role: Producer, Narrative Designer & Gameplay Programmer
+teamSize: 4
+genre: Narrative action
+platforms: [PC, Web]
+engine: Unity
+links:
+  play: https://itch.io/
+  trailer: ""
+  repo: https://github.com/
+gallery:
+  - image: /uploads/example-shot-1.svg
+    caption: The ash storm rolling into the old district.
+  - image: /uploads/example-shot-2.svg
+    caption: Route-planning screen.
+featured: true
+order: 1
+production:
+  contribution: Ran the 48-hour jam plan, cut scope at the right moments and kept the team in sync.
+  responsibilities:
+    - Defined the scope and a three-milestone plan
+    - Ran stand-ups every 6 hours
+    - Owned the build and submission
+  highlights:
+    - Shipped on time with every core feature
+    - Top 10% in "Theme" out of 900 entries
+  tools: [HacknPlan, Discord, Google Sheets]
+  evidence:
+    - url: https://example.com/
+      caption: Public jam postmortem
+  methodology: Kanban with timeboxed milestones
+  teamManaged: 4
+  documents:
+    - label: Jam plan (one-pager)
+      url: https://example.com/
+narrative:
+  contribution: Wrote the courier's radio dialogue and the notes players find along the routes.
+  responsibilities:
+    - World premise and tone
+    - 40 lines of branching radio dialogue
+  highlights:
+    - Players quoted the ending in most reviews
+  tools: [Ink]
+  evidence: []
+  structure: Linear core with branching radio calls
+  scriptExcerpt: |
+    DISPATCH: You're late again, courier.
+    COURIER: The road's gone. I'm taking the rooftops.
+    DISPATCH: ...Then don't look down. The ash remembers footsteps.
+  scriptLink: https://example.com/
+programming:
+  contribution: Built the movement controller and the dynamic ash system that closes roads over time.
+  responsibilities:
+    - Character controller
+    - Ash spread simulation on a grid
+  highlights:
+    - Stable 60 FPS on the WebGL build
+  tools: [Unity, C#]
+  evidence: []
+  systems:
+    - Character controller with ledge grab
+    - Grid-based ash spread
+    - Delivery timer and scoring
+  languages: [C#]
+  challenge: The ash spread made the WebGL build stutter. I moved it to a fixed tick spread across frames, which removed the spikes.
+  codeSnippet: |
+    void Tick()
+    {
+        // Spread to a budget of cells per frame to avoid spikes.
+        for (int i = 0; i < cellsPerFrame && frontier.Count > 0; i++)
+        {
+            var cell = frontier.Dequeue();
+            foreach (var n in grid.Neighbours(cell))
+                if (grid.TryIgnite(n)) frontier.Enqueue(n);
+        }
+    }
+  codeLanguage: csharp

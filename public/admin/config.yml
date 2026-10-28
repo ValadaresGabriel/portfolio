@@ -1,0 +1,180 @@
+# Sveltia CMS configuration. Field names and required rules mirror
+# src/content.config.ts; change both together.
+
+backend:
+  name: github
+  repo: OWNER/REPO # set in task 10 (e.g. yourname/portfolio)
+  branch: main
+  # base_url: https://sveltia-cms-auth.<your-subdomain>.workers.dev  # set in task 11
+  commit_messages:
+    create: "Add {{collection}} “{{slug}}”"
+    update: "Update {{collection}} “{{slug}}”"
+    delete: "Delete {{collection}} “{{slug}}”"
+    uploadMedia: "Upload “{{path}}”"
+    deleteMedia: "Delete “{{path}}”"
+
+media_folder: public/uploads
+public_folder: /uploads
+editor:
+  preview: false
+
+collections:
+  - name: profile
+    label: Profile
+    files:
+      - name: profile
+        label: Profile (Home page)
+        file: src/content/profile/profile.md
+        format: frontmatter
+        fields:
+          - { label: Name, name: name, widget: string }
+          - { label: Title, name: title, widget: string, hint: 'e.g. "Game Producer & Narrative Designer"' }
+          - { label: Photo, name: photo, widget: image, required: false }
+          - { label: Location, name: location, widget: string, required: false }
+          - { label: Short bio, name: shortBio, widget: text, hint: "2–3 lines shown at the top of the Home page" }
+          - { label: Open to work, name: openToWork, widget: boolean, default: false }
+          - { label: Looking for, name: lookingFor, widget: string, required: false, hint: "Kind of role you want" }
+          - label: Areas
+            name: areas
+            widget: object
+            fields:
+              - { label: Game Production, name: production, widget: object, fields: &areaSummary [{ label: Summary, name: summary, widget: text, required: false }, { label: Tools, name: tools, widget: list, required: false, hint: "Comma-separated" }] }
+              - { label: Narrative Design, name: narrative, widget: object, fields: *areaSummary }
+              - { label: Gameplay Programming, name: programming, widget: object, fields: *areaSummary }
+          - { label: Email, name: email, widget: string, pattern: ['^\S+@\S+\.\S+$', 'Must be a valid email'] }
+          - { label: Links, name: links, widget: list, required: false, summary: "{{fields.label}}", fields: &link [{ label: Label, name: label, widget: string }, { label: URL, name: url, widget: string }] }
+          - { label: CV (PDF), name: cv, widget: file, required: false }
+          - { label: About, name: body, widget: markdown, required: false, hint: "Longer About section" }
+
+  - name: games
+    label: Games
+    label_singular: Game
+    folder: src/content/games
+    extension: yml
+    format: yaml
+    create: true
+    delete: true
+    identifier_field: title
+    slug: "{{slug}}"
+    summary: "{{title}} · {{status}}"
+    sortable_fields: [order, title]
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Cover, name: cover, widget: image, hint: "16:9 works best" }
+      - { label: One-line pitch, name: pitch, widget: string }
+      - { label: Short description, name: description, widget: text, required: false }
+      - label: Type
+        name: type
+        widget: select
+        options:
+          - { label: Studio, value: studio }
+          - { label: Personal, value: personal }
+          - { label: Game jam, value: game-jam }
+          - { label: Academic, value: academic }
+      - label: Status
+        name: status
+        widget: select
+        options:
+          - { label: Released, value: released }
+          - { label: In development, value: in-development }
+          - { label: Prototype, value: prototype }
+      - { label: Period, name: period, widget: string, required: false, hint: 'e.g. "2024" or "2023 – 2024"' }
+      - { label: Your role, name: role, widget: string }
+      - { label: Team size, name: teamSize, widget: number, value_type: int, min: 1, required: false }
+      - { label: Genre, name: genre, widget: string, required: false }
+      - { label: Platforms, name: platforms, widget: list, required: false, hint: "Comma-separated" }
+      - { label: Engine, name: engine, widget: string, required: false }
+      - label: Links
+        name: links
+        widget: object
+        required: false
+        fields:
+          - { label: Play / Store, name: play, widget: string, required: false }
+          - { label: Trailer (YouTube), name: trailer, widget: string, required: false }
+          - { label: Repository, name: repo, widget: string, required: false }
+      - label: Gallery
+        name: gallery
+        widget: list
+        required: false
+        summary: "{{fields.caption}}"
+        fields:
+          - { label: Image, name: image, widget: image }
+          - { label: Caption, name: caption, widget: string, required: false }
+      - { label: Featured on Home, name: featured, widget: boolean, default: false }
+      - { label: Display order, name: order, widget: number, value_type: int, default: 100, required: false, hint: "Lower numbers show first" }
+
+      - label: Game Production
+        name: production
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { label: Contribution, name: contribution, widget: text, required: false, hint: "What you did, in one or two sentences. Leave the whole area empty to hide it." }
+          - { label: Responsibilities, name: responsibilities, widget: list, required: false, field: { label: Item, name: item, widget: string } }
+          - { label: Highlights & results, name: highlights, widget: list, required: false, field: { label: Item, name: item, widget: string } }
+          - { label: Tools, name: tools, widget: list, required: false, hint: "Comma-separated" }
+          - label: Evidence
+            name: evidence
+            widget: list
+            required: false
+            summary: "{{fields.caption}}"
+            fields:
+              - { label: Image, name: image, widget: image, required: false }
+              - { label: Link, name: url, widget: string, required: false }
+              - { label: Caption, name: caption, widget: string, required: false }
+          - { label: Methodology, name: methodology, widget: string, required: false, hint: "Scrum, Kanban…" }
+          - { label: Team coordinated, name: teamManaged, widget: number, value_type: int, min: 1, required: false }
+          - { label: Documents, name: documents, widget: list, required: false, summary: "{{fields.label}}", fields: *link }
+
+      - label: Narrative Design
+        name: narrative
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { label: Contribution, name: contribution, widget: text, required: false, hint: "What you did, in one or two sentences. Leave the whole area empty to hide it." }
+          - { label: Responsibilities, name: responsibilities, widget: list, required: false, field: { label: Item, name: item, widget: string } }
+          - { label: Highlights & results, name: highlights, widget: list, required: false, field: { label: Item, name: item, widget: string } }
+          - { label: Tools, name: tools, widget: list, required: false, hint: "Comma-separated" }
+          - label: Evidence
+            name: evidence
+            widget: list
+            required: false
+            summary: "{{fields.caption}}"
+            fields:
+              - { label: Image, name: image, widget: image, required: false }
+              - { label: Link, name: url, widget: string, required: false }
+              - { label: Caption, name: caption, widget: string, required: false }
+          - { label: Narrative structure, name: structure, widget: string, required: false, hint: "Linear, branching…" }
+          - { label: Script excerpt, name: scriptExcerpt, widget: text, required: false }
+          - { label: Script / document link, name: scriptLink, widget: string, required: false }
+
+      - label: Gameplay Programming
+        name: programming
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { label: Contribution, name: contribution, widget: text, required: false, hint: "What you did, in one or two sentences. Leave the whole area empty to hide it." }
+          - { label: Responsibilities, name: responsibilities, widget: list, required: false, field: { label: Item, name: item, widget: string } }
+          - { label: Highlights & results, name: highlights, widget: list, required: false, field: { label: Item, name: item, widget: string } }
+          - { label: Tools, name: tools, widget: list, required: false, hint: "Comma-separated" }
+          - label: Evidence
+            name: evidence
+            widget: list
+            required: false
+            summary: "{{fields.caption}}"
+            fields:
+              - { label: Image, name: image, widget: image, required: false }
+              - { label: Link, name: url, widget: string, required: false }
+              - { label: Caption, name: caption, widget: string, required: false }
+          - { label: Systems implemented, name: systems, widget: list, required: false, field: { label: Item, name: item, widget: string } }
+          - { label: Languages, name: languages, widget: list, required: false, hint: "Comma-separated" }
+          - { label: Technical challenge & solution, name: challenge, widget: text, required: false }
+          - { label: Code sample, name: codeSnippet, widget: code, required: false, output_code_only: true, allow_language_selection: false }
+          - label: Code language
+            name: codeLanguage
+            widget: select
+            required: false
+            default: plaintext
+            options: [csharp, cpp, c, gdscript, lua, python, javascript, typescript, hlsl, glsl, java, rust, plaintext]
