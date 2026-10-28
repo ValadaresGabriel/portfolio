@@ -3,7 +3,7 @@
 
 backend:
   name: github
-  repo: OWNER/REPO # set in task 10 (e.g. yourname/portfolio)
+  repo: ValadaresGabriel/portfolio
   branch: main
   # base_url: https://sveltia-cms-auth.<your-subdomain>.workers.dev  # set in task 11
   commit_messages:
