@@ -5,7 +5,7 @@ backend:
   name: github
   repo: ValadaresGabriel/portfolio
   branch: main
-  # base_url: https://sveltia-cms-auth.<your-subdomain>.workers.dev  # set in task 11
+  # Sign-in uses a GitHub fine-grained token (Contents: read and write).
   commit_messages:
     create: "Add {{collection}} “{{slug}}”"
     update: "Update {{collection}} “{{slug}}”"

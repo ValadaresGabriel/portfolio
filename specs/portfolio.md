@@ -9,7 +9,7 @@ Site pessoal de portfólio para game dev que mostra, jogo por jogo, o trabalho e
 - Site estático em Astro, publicado como Worker de arquivos estáticos na Cloudflare (Workers Builds, configurado em `wrangler.jsonc`) a partir de um repositório no GitHub.
 - Cada push na branch principal publica o site automaticamente.
 - Painel `/admin` com Sveltia CMS, usando o GitHub como backend. Cada alteração vira um commit no repositório.
-- Login no painel via GitHub OAuth, com o worker gratuito `sveltia-cms-auth` na Cloudflare. Só o dono do repositório consegue editar.
+- Login no painel com um token de acesso do GitHub (fine-grained, só neste repositório, permissão Contents: read and write), guardado no navegador. Só quem tem o token consegue editar. Sem OAuth app nem worker extra.
 - Imagens e PDF ficam no próprio repositório (`public/uploads`).
 - Domínio próprio apontando para o Worker.
 
@@ -68,5 +68,5 @@ Site pessoal de portfólio para game dev que mostra, jogo por jogo, o trabalho e
 - [x] 8. Configurar o Sveltia CMS em `/admin`, espelhando os schemas.
 - [x] 9. Verificar localmente: build, páginas, filtro e celular.
 - [x] 10. Criar o repositório no GitHub e ligar ao Cloudflare Workers (com você).
-- [ ] 11. Configurar o OAuth do GitHub e o worker `sveltia-cms-auth`, e testar o CRUD (com você).
+- [ ] 11. Criar o token de acesso do GitHub, entrar no `/admin` e testar o CRUD (com você).
 - [ ] 12. Configurar o domínio (com você, depois de comprar).
