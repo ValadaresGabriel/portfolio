@@ -54,7 +54,7 @@ Site pessoal de portfólio para game dev que mostra, jogo por jogo, o trabalho e
 - [x] Em `/games`, o filtro de cada área mostra só os jogos que têm aquela área.
 - [x] Na página do jogo, só aparecem as seções das áreas preenchidas.
 - [x] Nenhuma página tem rolagem horizontal em 360px de largura.
-- [ ] Criar, editar e excluir um jogo no `/admin` gera commits no GitHub, e o site publicado reflete a mudança.
+- [x] Criar, editar e excluir um jogo no `/admin` gera commits no GitHub, e o site publicado reflete a mudança.
 - [ ] O site abre no domínio próprio com HTTPS.
 
 ## Tarefas
@@ -68,5 +68,5 @@ Site pessoal de portfólio para game dev que mostra, jogo por jogo, o trabalho e
 - [x] 8. Configurar o Sveltia CMS em `/admin`, espelhando os schemas.
 - [x] 9. Verificar localmente: build, páginas, filtro e celular.
 - [x] 10. Criar o repositório no GitHub e ligar ao Cloudflare Workers (com você).
-- [ ] 11. Criar o token de acesso do GitHub, entrar no `/admin` e testar o CRUD (com você).
+- [x] 11. Criar o token de acesso do GitHub, entrar no `/admin` e testar o CRUD (com você).
 - [ ] 12. Configurar o domínio (com você, depois de comprar).
