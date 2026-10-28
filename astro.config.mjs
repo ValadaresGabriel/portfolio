@@ -1,8 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// SITE_URL is set on Cloudflare Pages once the custom domain exists;
-// CF_PAGES_URL is provided by Cloudflare on every build.
+// Public URL used for canonical links and share images.
+// Change it to the custom domain once it is set up (task 12).
 export default defineConfig({
-  site: process.env.SITE_URL || process.env.CF_PAGES_URL || 'http://localhost:4321',
+  site: process.env.SITE_URL || 'https://portfolio.gabriu10.workers.dev',
 });
