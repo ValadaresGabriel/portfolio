@@ -67,6 +67,6 @@ Site pessoal de portfólio para game dev que mostra, jogo por jogo, o trabalho e
 - [x] 7. Fazer a página do jogo.
 - [x] 8. Configurar o Sveltia CMS em `/admin`, espelhando os schemas.
 - [x] 9. Verificar localmente: build, páginas, filtro e celular.
-- [ ] 10. Criar o repositório no GitHub e ligar ao Cloudflare Workers (com você).
+- [x] 10. Criar o repositório no GitHub e ligar ao Cloudflare Workers (com você).
 - [ ] 11. Configurar o OAuth do GitHub e o worker `sveltia-cms-auth`, e testar o CRUD (com você).
 - [ ] 12. Configurar o domínio (com você, depois de comprar).
