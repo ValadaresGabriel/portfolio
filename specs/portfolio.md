@@ -55,7 +55,7 @@ Site pessoal de portfólio para game dev que mostra, jogo por jogo, o trabalho e
 - [x] Na página do jogo, só aparecem as seções das áreas preenchidas.
 - [x] Nenhuma página tem rolagem horizontal em 360px de largura.
 - [x] Criar, editar e excluir um jogo no `/admin` gera commits no GitHub, e o site publicado reflete a mudança.
-- [ ] O site abre no domínio próprio com HTTPS.
+- [x] O site abre no domínio próprio com HTTPS.
 
 ## Tarefas
 - [x] 1. Criar o projeto Astro, iniciar o git e adicionar o `.gitignore`.
@@ -69,4 +69,4 @@ Site pessoal de portfólio para game dev que mostra, jogo por jogo, o trabalho e
 - [x] 9. Verificar localmente: build, páginas, filtro e celular.
 - [x] 10. Criar o repositório no GitHub e ligar ao Cloudflare Workers (com você).
 - [x] 11. Criar o token de acesso do GitHub, entrar no `/admin` e testar o CRUD (com você).
-- [ ] 12. Configurar o domínio (com você, depois de comprar).
+- [x] 12. Configurar o domínio (gabrielvaladares.com e www, no Worker).
