@@ -1,7 +1,7 @@
 ---
 title: RPG
 cover: /uploads/example-cover-1.svg
-pitch: A soulslike 2D action platformer, written by hand in the CMS.
+pitch: A soulslike 2D action platformer. Pitch edited after the first import.
 description: It started as a team project in 2024 and I picked it back up on my own in 2026. In the restart I rebuilt movement, combat and the camera, reusing systems from my other game, Tales of the Dark Abyss. Highlights include a room-based Cinemachine 3 camera, an event-driven impact feedback pipeline and a parry that deflects projectiles.
 type: personal
 status: in-development
