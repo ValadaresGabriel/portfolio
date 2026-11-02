@@ -40,8 +40,8 @@ Importar no `/admin` o `PORTFOLIO.md` gerado pela skill `/game-portfolio` para u
 ## Critérios de aceite
 - [x] `npm run build` termina sem erros com os jogos de exemplo convertidos para `.md`.
 - [x] O parser aceita o PORTFOLIO.md do RPG e recusa, com mensagem clara, cópias quebradas: sem uma seção, com `status` inválido e com YAML inválido.
-- [ ] No `/admin`, importar o PORTFOLIO.md do RPG num jogo criado no CMS e salvar gera um commit em que Programming, `credits` e o corpo estão preenchidos, e capa, galeria, links e as demais áreas ficam iguais.
-- [ ] Reimportar o mesmo arquivo depois de editar `pitch` no CMS mantém o `pitch` editado.
+- [x] No `/admin`, importar o PORTFOLIO.md do RPG num jogo criado no CMS e salvar gera um commit em que Programming, `credits` e o corpo estão preenchidos, e capa, galeria, links e as demais áreas ficam iguais.
+- [x] Reimportar o mesmo arquivo depois de editar `pitch` no CMS mantém o `pitch` editado.
 - [x] A página do RPG mostra os dados do jogo, a área Programming com o code snippet, o bloco Team com os 3 colegas e o estudo de caso, com Highlights em cartões, a Timeline aberta e as outras seções recolhidas.
 - [x] Um jogo sem créditos e sem corpo não mostra o bloco Team nem a seção Case study.
 - [x] Nenhuma página tem rolagem horizontal em 360px de largura.
@@ -54,4 +54,4 @@ Importar no `/admin` o `PORTFOLIO.md` gerado pela skill `/game-portfolio` para u
 - [x] 5. Exibir o bloco Team na página do jogo.
 - [x] 6. Exibir a seção Case study (Highlights, Timeline, seções recolhidas e markdown comum como reserva).
 - [x] 7. Verificar localmente: build e a página do RPG gerada pelo merge, no desktop e em 360px.
-- [ ] 8. Testar a importação no `/admin` publicado e conferir o commit e a página (com você).
+- [x] 8. Testar a importação no `/admin` publicado e conferir o commit e a página (com você).

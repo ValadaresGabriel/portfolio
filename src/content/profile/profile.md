@@ -1,9 +1,8 @@
 ---
 # EXAMPLE CONTENT: replace everything here through /admin.
-name: Your Name
+name: Gabriel Valadares
 title: Game Producer & Narrative Designer
 photo: /uploads/example-photo.svg
-location: São Paulo, Brazil
 shortBio: Game developer who plans the work, writes the story and codes the systems that make players care. This is example text, so edit it in /admin.
 openToWork: true
 lookingFor: Junior/mid roles in production or narrative design, remote or hybrid.
@@ -17,14 +16,12 @@ areas:
   programming:
     summary: Gameplay systems in Unity and Godot, built so designers can tweak them.
     tools: [Unity, C#, Godot, GDScript, Git]
-email: you@example.com
+email: Gabriu10@gmail.com
 links:
   - label: LinkedIn
-    url: https://www.linkedin.com/
-  - label: itch.io
-    url: https://itch.io/
+    url: https://www.linkedin.com/in/gabriel-pacini-valadares/
   - label: GitHub
-    url: https://github.com/
+    url: https://github.com/ValadaresGabriel
 cv: /uploads/example-cv.pdf
 ---
 
