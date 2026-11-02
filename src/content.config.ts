@@ -94,7 +94,8 @@ const profile = defineCollection({
 });
 
 const games = defineCollection({
-  loader: glob({ pattern: '*.{yml,yaml}', base: './src/content/games' }),
+  // Fields live in the frontmatter; the body is the case study.
+  loader: glob({ pattern: '*.md', base: './src/content/games' }),
   schema: z.object({
     title: required,
     cover: required,
@@ -108,6 +109,10 @@ const games = defineCollection({
     genre: optional,
     platforms: stringList,
     engine: optional,
+    credits: z
+      .array(z.object({ name: required, role: optional }))
+      .nullish()
+      .transform((v) => v ?? []),
     links: z
       .object({ play: optional, trailer: optional, repo: optional })
       .nullish()

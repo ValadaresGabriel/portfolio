@@ -55,6 +55,28 @@ export const t = {
     languages: 'Languages',
     challenge: 'Technical challenge & solution',
     code: 'Code sample',
+    credits: 'Team',
+  },
+  caseStudy: {
+    title: 'Case study',
+    sections: {
+      timeline: 'Timeline',
+      architecture: 'Architecture',
+      decisions: 'Decisions',
+      challenges: 'Challenges',
+      codeEvolution: 'Code evolution',
+      skills: 'Skills',
+      highlights: 'Highlights',
+    },
+    labels: {
+      'What changed': 'What changed',
+      Why: 'Why',
+      Cause: 'Cause',
+      Solution: 'Solution',
+      Problem: 'Problem',
+      Result: 'Result',
+    },
+    items: (n: number) => (n === 1 ? '1 item' : `${n} items`),
   },
   type: {
     studio: 'Studio',

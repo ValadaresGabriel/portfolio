@@ -1,3 +1,4 @@
+---
 # EXAMPLE CONTENT: replace or delete through /admin.
 title: "Example: Lantern Keeper"
 cover: /uploads/example-cover-2.svg
@@ -45,3 +46,4 @@ programming:
         if hit and hit.collider.is_in_group("mirror"):
             propagate(hit.position, dir.bounce(hit.normal))
   codeLanguage: gdscript
+---

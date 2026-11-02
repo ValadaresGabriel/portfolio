@@ -50,8 +50,8 @@ collections:
     label: Games
     label_singular: Game
     folder: src/content/games
-    extension: yml
-    format: yaml
+    extension: md
+    format: frontmatter
     create: true
     delete: true
     identifier_field: title
@@ -59,6 +59,9 @@ collections:
     summary: "{{title}} · {{status}}"
     sortable_fields: [order, title]
     fields:
+      # Custom field from portfolio-field.js. It is never saved: on save its text
+      # fills Programming, Credits and Case study, then it is removed.
+      - { label: Import PORTFOLIO.md, name: portfolioImport, widget: portfolio-import, required: false }
       - { label: Title, name: title, widget: string }
       - { label: Cover, name: cover, widget: image, hint: "16:9 works best" }
       - { label: One-line pitch, name: pitch, widget: string }
@@ -84,6 +87,15 @@ collections:
       - { label: Genre, name: genre, widget: string, required: false }
       - { label: Platforms, name: platforms, widget: list, required: false, hint: "Comma-separated" }
       - { label: Engine, name: engine, widget: string, required: false }
+      - label: Credits
+        name: credits
+        widget: list
+        required: false
+        hint: "Teammates, shown as the Team block"
+        summary: "{{fields.name}} · {{fields.role}}"
+        fields:
+          - { label: Name, name: name, widget: string }
+          - { label: Role, name: role, widget: string, required: false }
       - label: Links
         name: links
         widget: object
@@ -178,3 +190,5 @@ collections:
             required: false
             default: plaintext
             options: [csharp, cpp, c, gdscript, lua, python, javascript, typescript, hlsl, glsl, java, rust, plaintext]
+
+      - { label: Case study, name: body, widget: markdown, required: false, hint: "Sections from PORTFOLIO.md: Timeline, Architecture, Decisions, Challenges, Code evolution, Skills, Highlights" }

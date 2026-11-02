@@ -7,12 +7,15 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "test": "node --test test/portfolio-import.test.mjs"
   },
   "dependencies": {
+    "@astrojs/markdown-satteri": "0.4.3",
     "astro": "7.3.8"
   },
   "devDependencies": {
-    "wrangler": "4.150.0"
+    "wrangler": "4.150.0",
+    "yaml": "2.9.1"
   }
 }

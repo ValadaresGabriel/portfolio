@@ -1,3 +1,4 @@
+---
 # EXAMPLE CONTENT: replace or delete through /admin.
 title: "Example: Ashfall Courier"
 cover: /uploads/example-cover-1.svg
@@ -82,3 +83,4 @@ programming:
         }
     }
   codeLanguage: csharp
+---

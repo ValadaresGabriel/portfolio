@@ -8,6 +8,17 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
+    <!-- Start the CMS only after the custom field below is registered. -->
+    <script>window.CMS_MANUAL_INIT = true;</script>
     <script src="https://unpkg.com/@sveltia/cms@0.237.0/dist/sveltia-cms.js"></script>
+    <script type="module">
+      try {
+        await import('/admin/portfolio-field.js');
+      } catch (e) {
+        console.error('The PORTFOLIO.md import field could not be loaded', e);
+      } finally {
+        CMS.init();
+      }
+    </script>
   </body>
 </html>
