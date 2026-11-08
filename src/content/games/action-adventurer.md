@@ -7,7 +7,7 @@ type: personal
 status: prototype
 period: Nov 2024 – Oct 2026
 role: Game Programming
-teamSize: 4
+teamSize: 1
 genre: 2D action platformer RPG
 platforms:
   - PC
