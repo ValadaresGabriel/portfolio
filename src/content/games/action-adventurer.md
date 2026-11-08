@@ -12,13 +12,7 @@ genre: 2D action platformer RPG
 platforms:
   - PC
 engine: Unity 6 (URP 2D)
-credits:
-  - name: Gabriel Ferreira Carrijo
-    role: Scenes and level design
-  - name: Bruno Lima
-    role: Maps
-  - name: heyset
-    role: Main menu, scene transitions and the first version of the camera limits
+credits: []
 links: null
 gallery: []
 featured: true
