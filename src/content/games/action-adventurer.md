@@ -1,7 +1,7 @@
 ---
 title: Action Adventurer
 cover: /uploads/Copy of Untitled Design.png
-pitch: asd
+pitch: None
 description: It started as a team project in 2024 and I picked it back up on my own in 2026. In the restart I rebuilt movement, combat and the camera, reusing systems from my other game, Tales of the Dark Abyss. Highlights include a room-based Cinemachine 3 camera, an event-driven impact feedback pipeline and a parry that deflects projectiles.
 type: personal
 status: prototype
@@ -223,4 +223,3 @@ programming:
 - **Problem:** the damage system assumed every attacker was a melee enemy, so the parry did not work against projectiles.
 - **Solution:** damage now receives who attacked and reports whether it was accepted, and hits gained projectile and deflectable flags.
 - **Result:** the parry deflects arrows, which fly back and start hitting enemies.
-
