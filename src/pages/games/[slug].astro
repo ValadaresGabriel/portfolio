@@ -20,6 +20,8 @@ const g = game.data;
 const areas = gameAreas(game);
 const trailerId = youtubeId(g.links.trailer);
 const study = await parseCaseStudy(game.body);
+const skills = study?.skills?.items ?? [];
+const hasStudy = study && (study.intro || study.highlights || study.timeline || study.others.length > 0);
 
 const facts = [
   { label: t.game.role, value: g.role },
@@ -34,7 +36,7 @@ const facts = [
 ---
 
 <Base title={g.title} description={g.pitch} image={g.cover}>
-  <article class="container section">
+  <article class="container section page">
     <a class="back" href="/games/">← {t.game.back}</a>
 
     <header class="top">
@@ -46,6 +48,13 @@ const facts = [
         <h1>{g.title}</h1>
         <p class="pitch">{g.pitch}</p>
         {g.description && <p class="muted">{g.description}</p>}
+        {
+          skills.length > 0 && (
+            <ul class="chips skills" aria-label={t.caseStudy.sections.skills}>
+              {skills.map((s) => <li class="chip" set:html={s.title} />)}
+            </ul>
+          )
+        }
         <div class="btn-row">
           {g.links.play && <a class="btn btn-primary" href={g.links.play} target="_blank" rel="noopener">{t.game.play} ↗</a>}
           {g.links.trailer && !trailerId && <a class="btn" href={g.links.trailer} target="_blank" rel="noopener">{t.game.trailer} ↗</a>}
@@ -99,13 +108,13 @@ const facts = [
       {areas.map((area) => <AreaSection game={game} area={area} />)}
     </div>
 
-    {study && <CaseStudy study={study} />}
+    {study && hasStudy && <CaseStudy study={study} />}
 
     {
       g.gallery.length > 0 && (
         <section class="gallery" aria-labelledby="gallery">
           <h2 id="gallery">{t.game.gallery}</h2>
-          <div class="grid">
+          <div class="shots">
             {g.gallery.map((item) => (
               <figure>
                 <a href={item.image} target="_blank" rel="noopener">
@@ -131,15 +140,20 @@ const facts = [
   .back:hover {
     color: var(--text);
   }
+  /* Single column, read top to bottom. */
+  .page {
+    max-width: 820px;
+  }
   .top {
     display: grid;
     gap: 28px;
-    align-items: center;
   }
-  @media (min-width: 860px) {
-    .top {
-      grid-template-columns: 1.1fr 1fr;
-    }
+  .skills {
+    margin-bottom: 18px;
+  }
+  .shots {
+    display: grid;
+    gap: 18px;
   }
   .cover {
     width: 100%;

@@ -54,7 +54,6 @@ export const t = {
     systems: 'Systems implemented',
     languages: 'Languages',
     challenge: 'Technical challenge & solution',
-    code: 'Code sample',
     credits: 'Team',
   },
   caseStudy: {
@@ -76,7 +75,6 @@ export const t = {
       Problem: 'Problem',
       Result: 'Result',
     },
-    items: (n: number) => (n === 1 ? '1 item' : `${n} items`),
   },
   type: {
     studio: 'Studio',

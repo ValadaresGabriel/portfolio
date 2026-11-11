@@ -13,9 +13,9 @@
   --radius: 14px;
   --gutter: 16px;
   --max: 1100px;
-  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --display: 'Space Grotesk', var(--font);
-  --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  --font: 'Nunito Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --display: var(--font);
+  --mono: ui-monospace, Consolas, monospace;
 }
 
 *,
@@ -33,8 +33,8 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 17px;
+  line-height: 1.65;
   overflow-wrap: anywhere;
 }
 
@@ -53,7 +53,8 @@ h1,
 h2,
 h3 {
   font-family: var(--display);
-  line-height: 1.15;
+  font-weight: 800;
+  line-height: 1.2;
   margin: 0 0 0.5em;
 }
 
@@ -94,8 +95,8 @@ p {
 }
 
 .eyebrow {
-  font-family: var(--mono);
   font-size: 0.78rem;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
@@ -162,8 +163,8 @@ p {
 }
 
 .area-badge {
-  font-family: var(--mono);
   font-size: 0.72rem;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 3px 9px;

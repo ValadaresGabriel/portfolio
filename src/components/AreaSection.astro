@@ -1,5 +1,4 @@
 ---
-import { Code } from 'astro:components';
 import { t } from '../i18n/en';
 import type { Area, Game } from '../lib/content';
 
@@ -130,14 +129,6 @@ const base = (prod ?? narr ?? prog)!;
       </div>
     )
   }
-  {
-    prog?.codeSnippet && (
-      <div>
-        <h3>{t.game.code}</h3>
-        <Code code={prog.codeSnippet} lang={prog.codeLanguage} theme="github-dark" />
-      </div>
-    )
-  }
 
   {
     base.tools.length > 0 && (
@@ -196,7 +187,6 @@ const base = (prod ?? narr ?? prog)!;
   h3 {
     color: var(--c);
     font-size: 0.95rem;
-    font-family: var(--mono);
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }
@@ -211,7 +201,6 @@ const base = (prod ?? narr ?? prog)!;
   .cols {
     display: grid;
     gap: 22px;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   }
   .facts {
     display: flex;

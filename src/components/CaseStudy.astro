@@ -8,6 +8,8 @@ interface Props {
 
 const { study } = Astro.props;
 const title = (s: Section) => (s.key ? t.caseStudy.sections[s.key] : s.name);
+// One read, top to bottom: the strongest material first.
+const sections = [study.highlights, study.timeline, ...study.others].filter((s): s is Section => !!s);
 ---
 
 <section class="case-study" aria-labelledby="case-study">
@@ -15,76 +17,27 @@ const title = (s: Section) => (s.key ? t.caseStudy.sections[s.key] : s.name);
   {study.intro && <div class="prose" set:html={study.intro} />}
 
   {
-    study.highlights && (
+    sections.map((section) => (
       <div class="block">
-        <h3>{title(study.highlights)}</h3>
-        {study.highlights.items ? (
-          <div class="highlights">
-            {study.highlights.items.map((item) => (
-              <article class="card highlight">
-                <h4 set:html={item.title} />
-                <dl>
-                  {item.fields.map((f) => (
-                    <div>
-                      <dt class="label">{t.caseStudy.labels[f.label]}</dt>
-                      <dd set:html={f.html} />
-                    </div>
-                  ))}
-                </dl>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <div class="card prose fallback" set:html={study.highlights.html} />
-        )}
-      </div>
-    )
-  }
-
-  {
-    study.timeline && (
-      <div class="block">
-        <h3>{title(study.timeline)}</h3>
-        {study.timeline.items ? (
-          <ol class="timeline">
-            {study.timeline.items.map((item) => (
-              <li>
-                <span class="label">{item.date}</span>
-                <strong set:html={item.title} />
-                <p set:html={item.text} />
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <div class="card prose fallback" set:html={study.timeline.html} />
-        )}
-      </div>
-    )
-  }
-
-  {
-    study.others.map((section) => (
-      <details class="card">
-        <summary>
-          <h3>{title(section)}</h3>
-          {section.items && <span class="muted count">{t.caseStudy.items(section.items.length)}</span>}
-        </summary>
+        <h3>{title(section)}</h3>
         {section.items ? (
           <ul class="entries">
             {section.items.map((item) => (
               <li>
                 <strong set:html={item.title} />
-                {item.text && <span set:html={` ${item.text}`} />}
-                {item.details.length > 0 && <ul>{item.details.map((d) => <li set:html={d} />)}</ul>}
-                {item.fields.length > 0 && (
-                  <dl>
-                    {item.fields.map((f) => (
-                      <div>
-                        <dt class="label">{t.caseStudy.labels[f.label]}</dt>
-                        <dd set:html={f.html} />
-                      </div>
+                {item.date && <span class="muted"> · {item.date}</span>}
+                {(item.text || item.details.length > 0 || item.fields.length > 0) && (
+                  <ul>
+                    {item.text && <li set:html={item.text} />}
+                    {item.details.map((d) => (
+                      <li set:html={d} />
                     ))}
-                  </dl>
+                    {item.fields.map((f) => (
+                      <li>
+                        <span class="label">{t.caseStudy.labels[f.label]}:</span> <Fragment set:html={f.html} />
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </li>
             ))}
@@ -92,7 +45,7 @@ const title = (s: Section) => (s.key ? t.caseStudy.sections[s.key] : s.name);
         ) : (
           <div class="prose" set:html={section.html} />
         )}
-      </details>
+      </div>
     ))
   }
 </section>
@@ -101,7 +54,7 @@ const title = (s: Section) => (s.key ? t.caseStudy.sections[s.key] : s.name);
   .case-study {
     margin-top: 40px;
     display: grid;
-    gap: 24px;
+    gap: 28px;
     min-width: 0;
   }
   .case-study > *,
@@ -111,109 +64,22 @@ const title = (s: Section) => (s.key ? t.caseStudy.sections[s.key] : s.name);
   h3 {
     color: var(--accent);
     font-size: 0.95rem;
-    font-family: var(--mono);
     text-transform: uppercase;
     letter-spacing: 0.06em;
-  }
-  h4 {
-    font-family: var(--display);
-    font-size: 1.05rem;
-    margin: 0 0 12px;
   }
   .label {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-weight: 600;
     color: var(--accent);
-  }
-  dl {
-    margin: 0;
-    display: grid;
-    gap: 10px;
-  }
-  dd {
-    margin: 0;
-  }
-  .highlights {
-    display: grid;
-    gap: 18px;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-  }
-  .highlight,
-  .fallback {
-    padding: 20px;
-  }
-  .timeline {
-    list-style: none;
-    margin: 0;
-    padding: 0 0 0 18px;
-    border-left: 2px solid var(--border);
-    display: grid;
-    gap: 16px;
-  }
-  .timeline li {
-    position: relative;
-    display: grid;
-  }
-  .timeline li::before {
-    content: '';
-    position: absolute;
-    left: -24px;
-    top: 0.45em;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-  .timeline p {
-    margin: 0;
-  }
-  details {
-    padding: 0 20px;
-  }
-  summary {
-    cursor: pointer;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 4px 12px;
-    padding: 16px 0;
-  }
-  summary h3 {
-    margin: 0;
-  }
-  /* display: flex hides the native marker, so draw one. */
-  summary::after {
-    content: '+';
-    margin-left: auto;
-    color: var(--muted);
-    font-family: var(--mono);
-  }
-  details[open] summary::after {
-    content: '−';
-  }
-  .count {
-    font-size: 0.85rem;
-  }
-  details[open] summary {
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 16px;
-  }
-  details > :last-child {
-    padding-bottom: 20px;
   }
   .entries {
     margin: 0;
     padding-left: 1.2em;
     display: grid;
-    gap: 14px;
+    gap: 12px;
   }
   .entries ul {
-    margin: 6px 0 0;
+    margin: 4px 0 0;
     padding-left: 1.2em;
-  }
-  .entries dl {
-    margin-top: 8px;
+    color: var(--muted);
   }
 </style>

@@ -25,9 +25,10 @@ Importar no `/admin` o `PORTFOLIO.md` gerado pela skill `/game-portfolio` para u
 ### Página do jogo
 - Um bloco "Team" logo abaixo dos dados do jogo, com um item `nome · função` por colega. Sem créditos, o bloco não aparece.
 - Uma seção "Case study" depois das áreas e antes da galeria, quando o corpo tiver conteúdo:
-  - os Highlights primeiro, como cartões com Problem, Solution e Result;
-  - a Timeline aberta, mostrando a fase, o mês e a descrição;
-  - Architecture, Decisions, Challenges, Code evolution e Skills em blocos recolhidos (`<details>`), com os rótulos (What changed, Why, Cause, Solution) destacados.
+  - leitura única em coluna única, com tudo aberto na página e em bullet points;
+  - os Highlights primeiro, depois a Timeline, Architecture, Decisions, Challenges e Code evolution, com os rótulos (Problem, What changed, Why, Cause, Solution, Result) destacados;
+  - as Skills não aparecem no estudo de caso: os nomes viram tags no bloco do topo, abaixo da descrição.
+- A página do jogo é em coluna única (capa, depois o texto), e a área Programming não mostra o Code sample. O campo continua no CMS e na importação, só não é exibido.
 - Uma seção que não segue o formato (por ter sido editada à mão) aparece como markdown comum, sem quebrar o build.
 - Os textos novos da interface ficam em `src/i18n/en.ts`.
 

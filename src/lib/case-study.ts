@@ -43,6 +43,8 @@ export interface CaseStudy {
   intro?: string;
   highlights?: Section;
   timeline?: Section;
+  /** Shown as tags at the top of the game page, not in the case study. */
+  skills?: Section;
   others: Section[];
 }
 
@@ -137,8 +139,9 @@ export async function parseCaseStudy(body: string | undefined): Promise<CaseStud
       : { key, name, html: await markdown(content) };
     if (key === 'highlights' && !study.highlights) study.highlights = section;
     else if (key === 'timeline' && !study.timeline) study.timeline = section;
+    else if (key === 'skills' && section.items && !study.skills) study.skills = section;
     else study.others.push(section);
   }
 
-  return study.intro || study.highlights || study.timeline || study.others.length ? study : undefined;
+  return study.intro || study.highlights || study.timeline || study.skills || study.others.length ? study : undefined;
 }
