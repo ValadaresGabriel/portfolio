@@ -2,6 +2,7 @@
 name: Gabriel Valadares
 title: Game Developer
 photo: /uploads/example-photo.svg
+banner: /uploads/profile-cover.png
 location: ''
 shortBio: Game developer who plans the work, writes the story and codes the systems that make players care.
 openToWork: true
