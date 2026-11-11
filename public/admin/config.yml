@@ -30,8 +30,9 @@ collections:
           - { label: Name, name: name, widget: string }
           - { label: Title, name: title, widget: string, hint: 'e.g. "Game Producer & Narrative Designer"' }
           - { label: Photo, name: photo, widget: image, required: false }
+          - { label: Cover photo, name: banner, widget: image, required: false, hint: "Wide image shown behind your photo at the top of the Home page (about 4:1)" }
           - { label: Location, name: location, widget: string, required: false }
-          - { label: Short bio, name: shortBio, widget: text, hint: "2–3 lines shown at the top of the Home page" }
+          - { label: Short bio, name: shortBio, widget: text, hint: "One sentence. Used for search and link previews, and at the top of the Home page when About is empty" }
           - { label: Open to work, name: openToWork, widget: boolean, default: false }
           - { label: Looking for, name: lookingFor, widget: string, required: false, hint: "Kind of role you want" }
           - label: Areas
@@ -44,7 +45,7 @@ collections:
           - { label: Email, name: email, widget: string, pattern: ['^\S+@\S+\.\S+$', 'Must be a valid email'] }
           - { label: Links, name: links, widget: list, required: false, summary: "{{fields.label}}", fields: &link [{ label: Label, name: label, widget: string }, { label: URL, name: url, widget: string }] }
           - { label: CV (PDF), name: cv, widget: file, required: false }
-          - { label: About, name: body, widget: markdown, required: false, hint: "Longer About section" }
+          - { label: About, name: body, widget: markdown, required: false, hint: "Shown at the top of the Home page. Two short paragraphs at most, plus a few bullets" }
 
   - name: games
     label: Games

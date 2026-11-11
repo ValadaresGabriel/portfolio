@@ -3,26 +3,32 @@ import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import GameCard from '../components/GameCard.astro';
 import { t } from '../i18n/en';
-import { AREAS, getGames, getProfile } from '../lib/content';
+import { AREAS, getGames, getProfile, hasArea } from '../lib/content';
 
 const profile = await getProfile();
 const p = profile.data;
 const { Content: About } = await render(profile);
-const featured = (await getGames()).filter((g) => g.data.featured);
+const hasAbout = Boolean(profile.body?.trim());
+const games = await getGames();
+const featured = games.filter((g) => g.data.featured);
+// Each area card shows a game with work in that area, featured games first.
+const areaGame = (area: (typeof AREAS)[number]) => [...featured, ...games].find((g) => hasArea(g, area));
 ---
 
 <Base>
-  <section class="hero container section">
-    {p.photo && <img class="photo" src={p.photo} alt={p.name} width="160" height="160" />}
-    <div>
+  <section class="hero container">
+    <div class="banner" style={p.banner ? `background-image: url("${encodeURI(p.banner)}")` : undefined}></div>
+    <div class="who">
+      {p.photo && <img class="photo" src={p.photo} alt={p.name} width="140" height="140" />}
       {p.openToWork && <p class="open"><span class="dot"></span>{t.home.openToWork}</p>}
       <h1>{p.name}</h1>
       <p class="role">{p.title}</p>
-      <p class="bio">{p.shortBio}</p>
+      {hasAbout ? <div class="bio prose"><About /></div> : <p class="bio">{p.shortBio}</p>}
       {p.location && <p class="muted loc">📍 {p.location}</p>}
       <div class="btn-row">
         <a class="btn btn-primary" href="#contact">{t.home.contact}</a>
         {p.cv && <a class="btn" href={p.cv} download>{t.home.downloadCv} ↓</a>}
+        {featured.length > 0 && <a class="btn" href="#projects">{t.home.projects} ↓</a>}
       </div>
     </div>
   </section>
@@ -32,25 +38,32 @@ const featured = (await getGames()).filter((g) => g.data.featured);
     <h2 id="what" class="visually-hidden">{t.home.whatIDo}</h2>
     <div class="areas">
       {
-        AREAS.map((area) => (
-          <a class="area card" data-area={area} href={`/games/?area=${area}`}>
-            <span class="area-badge" data-area={area}>{t.areaShort[area]}</span>
-            <h3>{t.areas[area]}</h3>
-            {p.areas[area].summary && <p>{p.areas[area].summary}</p>}
-            {p.areas[area].tools.length > 0 && (
-              <ul class="chips">{p.areas[area].tools.map((tool) => <li class="chip">{tool}</li>)}</ul>
-            )}
-          </a>
-        ))
+        AREAS.map((area) => {
+          const game = areaGame(area);
+          return (
+            <a class="area card" data-area={area} href={`/games/?area=${area}`}>
+              {game && <img src={game.data.cover} alt={game.data.title} loading="lazy" width="1200" height="675" />}
+              <div class="area-body">
+                <span class="area-badge" data-area={area}>{t.areaShort[area]}</span>
+                <h3>{t.areas[area]}</h3>
+                {p.areas[area].summary && <p>{p.areas[area].summary}</p>}
+                {p.areas[area].tools.length > 0 && (
+                  <ul class="chips">{p.areas[area].tools.map((tool) => <li class="chip">{tool}</li>)}</ul>
+                )}
+                <span class="btn cta">{t.home.seeWork(t.areaShort[area])} →</span>
+              </div>
+            </a>
+          );
+        })
       }
     </div>
   </section>
 
   {
     featured.length > 0 && (
-      <section class="container section" aria-labelledby="featured">
+      <section class="container section" id="projects" aria-labelledby="projects-title">
         <div class="head">
-          <h2 id="featured">{t.home.featured}</h2>
+          <h2 id="projects-title">{t.home.projects}</h2>
           <a href="/games/">{t.home.allGames} →</a>
         </div>
         <div class="grid">
@@ -59,11 +72,6 @@ const featured = (await getGames()).filter((g) => g.data.featured);
       </section>
     )
   }
-
-  <section class="container section about" aria-labelledby="about">
-    <h2 id="about">{t.home.about}</h2>
-    <div class="prose"><About /></div>
-  </section>
 
   <section class="container section" id="contact" aria-labelledby="contact-title">
     <div class="contact card">
@@ -80,22 +88,34 @@ const featured = (await getGames()).filter((g) => g.data.featured);
 
 <style>
   .hero {
-    display: grid;
-    gap: 28px;
-    align-items: center;
-    padding-top: 72px;
+    padding-top: 24px;
+    padding-bottom: 32px;
   }
-  @media (min-width: 720px) {
-    .hero {
-      grid-template-columns: auto 1fr;
-    }
+  /* Cover photo with the profile photo overlapping its bottom edge. */
+  .banner {
+    height: clamp(130px, 26vw, 280px);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: linear-gradient(120deg, #16241c, #1a2233 55%, #2a1f38) center / cover no-repeat;
+  }
+  .who {
+    padding: 0 clamp(4px, 2vw, 24px);
+  }
+  .who > :first-child:not(.photo) {
+    margin-top: 24px;
   }
   .photo {
-    width: 160px;
-    height: 160px;
+    width: 140px;
+    height: 140px;
+    margin: -70px 0 16px;
+    position: relative;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid var(--border);
+    background: var(--surface);
+    border: 4px solid var(--bg);
+  }
+  .bio :global(ul) {
+    margin: 0 0 1em;
   }
   .open {
     display: inline-flex;
@@ -135,7 +155,9 @@ const featured = (await getGames()).filter((g) => g.data.featured);
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   }
   .area {
-    padding: 22px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     color: inherit;
     text-decoration: none;
     border-top: 3px solid var(--c);
@@ -143,6 +165,31 @@ const featured = (await getGames()).filter((g) => g.data.featured);
   }
   .area:hover {
     transform: translateY(-3px);
+  }
+  .area img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: var(--surface-2);
+  }
+  .area-body {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .area .chips {
+    margin-bottom: 20px;
+  }
+  .cta {
+    margin-top: auto;
+    align-self: flex-start;
+    border-color: var(--c);
+    color: var(--c);
+  }
+  .area:hover .cta {
+    background: var(--c);
+    color: #0d0e12;
   }
   .area h3 {
     margin-top: 12px;
@@ -158,10 +205,6 @@ const featured = (await getGames()).filter((g) => g.data.featured);
   }
   .head h2 {
     margin: 0;
-  }
-  .about .prose {
-    max-width: 70ch;
-    font-size: 1.05rem;
   }
   .contact {
     padding: 32px 24px;

@@ -91,12 +91,13 @@ const path = Astro.url.pathname;
   }
   nav {
     display: flex;
-    gap: 18px;
+    gap: clamp(10px, 3vw, 18px);
   }
   nav a {
     color: var(--muted);
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
   }
   nav a:hover,
   nav a[aria-current='page'] {

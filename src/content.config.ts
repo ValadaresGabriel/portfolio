@@ -72,6 +72,7 @@ const profile = defineCollection({
     name: required,
     title: required,
     photo: optional,
+    banner: optional,
     location: optional,
     shortBio: required,
     openToWork: z.boolean().nullish().transform((v) => v ?? false),

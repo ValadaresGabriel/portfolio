@@ -7,13 +7,21 @@ interface Props {
 }
 
 const { game } = Astro.props;
-const { title, cover, pitch, role, status } = game.data;
+const { title, cover, pitch, role, status, gallery } = game.data;
+const shots = gallery.slice(0, 3);
 const areas = gameAreas(game);
 ---
 
 <article class="game card" data-areas={areas.join(' ')}>
   <a href={`/games/${game.id}/`} class="link">
     <img src={cover} alt="" loading="lazy" width="1200" height="675" />
+    {
+      shots.length > 0 && (
+        <ul class="shots" aria-label={t.game.screenshots}>
+          {shots.map((s) => <li><img src={s.image} alt={s.caption ?? ''} loading="lazy" /></li>)}
+        </ul>
+      )
+    }
     <div class="body">
       <ul class="chips badges" aria-label="Areas">
         {areas.map((a) => <li class="area-badge" data-area={a}>{t.areaShort[a]}</li>)}
@@ -45,6 +53,17 @@ const areas = gameAreas(game);
     aspect-ratio: 16 / 9;
     object-fit: cover;
     background: var(--surface-2);
+  }
+  .shots {
+    list-style: none;
+    margin: 0;
+    padding: 6px 6px 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .shots img {
+    border-radius: 6px;
   }
   .body {
     padding: 16px 18px 18px;

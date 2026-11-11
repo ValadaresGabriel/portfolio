@@ -36,7 +36,3 @@ links:
     url: https://github.com/ValadaresGabriel
 cv: /uploads/example-cv.pdf
 ---
-
-This is the longer **About** section, and it is example text. Tell your story here: how you got into games, what kind of projects excite you, and what you bring to a team.
-
-You can use Markdown: paragraphs, **bold**, *italics*, [links](https://example.com) and lists.
