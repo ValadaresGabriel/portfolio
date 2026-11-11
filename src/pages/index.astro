@@ -44,7 +44,6 @@ const areaGame = (area: (typeof AREAS)[number]) => [...featured, ...games].find(
             <a class="area card" data-area={area} href={`/games/?area=${area}`}>
               {game && <img src={game.data.cover} alt={game.data.title} loading="lazy" width="1200" height="675" />}
               <div class="area-body">
-                <span class="area-badge" data-area={area}>{t.areaShort[area]}</span>
                 <h3>{t.areas[area]}</h3>
                 {p.areas[area].summary && <p>{p.areas[area].summary}</p>}
                 {p.areas[area].tools.length > 0 && (
@@ -192,7 +191,7 @@ const areaGame = (area: (typeof AREAS)[number]) => [...featured, ...games].find(
     color: #0d0e12;
   }
   .area h3 {
-    margin-top: 12px;
+    margin-top: 0;
     font-size: 1.25rem;
   }
   .head {
