@@ -4,6 +4,8 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "portfolio",
   "compatibility_date": "2026-10-01",
+  // Required by `wrangler preview`, which Cloudflare runs for branches and pull requests.
+  "previews": {},
   "build": {
     "command": "npm run build"
   },
