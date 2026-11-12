@@ -5,9 +5,11 @@ import type { Area, Game } from '../lib/content';
 interface Props {
   game: Game;
   area: Area;
+  /** Hide highlights, systems and the challenge: the case study covers them. */
+  compact?: boolean;
 }
 
-const { game, area } = Astro.props;
+const { game, area, compact = false } = Astro.props;
 const d = game.data;
 // Narrow the union so area-specific fields are typed.
 const prod = area === 'production' ? d.production : undefined;
@@ -33,7 +35,7 @@ const base = (prod ?? narr ?? prog)!;
       )
     }
     {
-      base.highlights.length > 0 && (
+      !compact && base.highlights.length > 0 && (
         <div>
           <h3>{t.game.highlights}</h3>
           <ul class="highlights">{base.highlights.map((h) => <li>{h}</li>)}</ul>
@@ -106,7 +108,7 @@ const base = (prod ?? narr ?? prog)!;
   {
     prog && (prog.systems.length > 0 || prog.languages.length > 0) && (
       <div class="cols">
-        {prog.systems.length > 0 && (
+        {!compact && prog.systems.length > 0 && (
           <div>
             <h3>{t.game.systems}</h3>
             <ul>{prog.systems.map((s) => <li>{s}</li>)}</ul>
@@ -122,7 +124,7 @@ const base = (prod ?? narr ?? prog)!;
     )
   }
   {
-    prog?.challenge && (
+    !compact && prog?.challenge && (
       <div>
         <h3>{t.game.challenge}</h3>
         <p>{prog.challenge}</p>

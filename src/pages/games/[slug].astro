@@ -21,7 +21,25 @@ const areas = gameAreas(game);
 const trailerId = youtubeId(g.links.trailer);
 const study = await parseCaseStudy(game.body);
 const skills = study?.skills?.items ?? [];
-const hasStudy = study && (study.intro || study.highlights || study.timeline || study.others.length > 0);
+const byKey = (...keys: string[]) => (study?.others ?? []).filter((x) => x.key && keys.includes(x.key));
+const decisions = byKey('decisions', 'challenges');
+const hood = byKey('architecture', 'codeEvolution');
+// Anything outside the template (hand-edited in the CMS) keeps its own heading.
+const extras = (study?.others ?? []).filter((x) => !decisions.includes(x) && !hood.includes(x));
+const hasStudy = Boolean(study?.highlights || study?.timeline || decisions.length || hood.length);
+const hasMedia = Boolean(trailerId) || g.gallery.length > 0;
+
+// The page outline, in reading order. It drives both the sections and the summary bar.
+const outline = [
+  { id: 'overview', label: t.game.sections.overview, show: true },
+  { id: 'media', label: t.game.sections.media, show: hasMedia },
+  { id: 'role', label: t.game.sections.role, show: areas.length > 0 },
+  { id: 'highlights', label: t.caseStudy.sections.highlights, show: Boolean(study?.highlights) },
+  { id: 'decisions', label: t.game.sections.decisions, show: decisions.length > 0 },
+  { id: 'hood', label: t.game.sections.hood, show: hood.length > 0 },
+  { id: 'timeline', label: t.caseStudy.sections.timeline, show: Boolean(study?.timeline) },
+  ...extras.map((x, i) => ({ id: `more-${i + 1}`, label: x.key ? t.caseStudy.sections[x.key] : x.name, show: true })),
+].filter((x) => x.show);
 
 const facts = [
   { label: t.game.role, value: g.role },
@@ -39,7 +57,7 @@ const facts = [
   <article class="container section page">
     <a class="back" href="/games/">← {t.game.back}</a>
 
-    <header class="top">
+    <header class="top sec" id="overview">
       <img class="cover" src={g.cover} alt="" width="1200" height="675" />
       <div class="intro">
         <ul class="chips">
@@ -62,6 +80,13 @@ const facts = [
         </div>
       </div>
     </header>
+
+    <nav class="toc" aria-label={t.game.toc}>
+      <span class="toc-label">{t.game.toc}</span>
+      <ol>
+        {outline.map((x) => <li><a href={`#${x.id}`}>{x.label}</a></li>)}
+      </ol>
+    </nav>
 
     <dl class="facts card">
       {
@@ -91,44 +116,112 @@ const facts = [
     }
 
     {
-      trailerId && (
-        <div class="trailer">
-          <iframe
-            src={`https://www.youtube-nocookie.com/embed/${trailerId}`}
-            title={`${g.title}: ${t.game.trailer}`}
-            loading="lazy"
-            allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          />
-        </div>
+      hasMedia && (
+        <section class="sec" id="media">
+          <h2>{t.game.sections.media}</h2>
+          {trailerId && (
+            <div class="trailer">
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${trailerId}`}
+                title={`${g.title}: ${t.game.trailer}`}
+                loading="lazy"
+                allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              />
+            </div>
+          )}
+          {g.gallery.length > 0 && (
+            <div class="shots">
+              {g.gallery.map((item) => (
+                <figure>
+                  <a href={item.image} target="_blank" rel="noopener">
+                    <img src={item.image} alt={item.caption ?? ''} loading="lazy" />
+                  </a>
+                  {item.caption && <figcaption class="muted">{item.caption}</figcaption>}
+                </figure>
+              ))}
+            </div>
+          )}
+        </section>
       )
     }
 
-    <div class="areas">
-      {areas.map((area) => <AreaSection game={game} area={area} />)}
-    </div>
-
-    {study && hasStudy && <CaseStudy study={study} />}
-
     {
-      g.gallery.length > 0 && (
-        <section class="gallery" aria-labelledby="gallery">
-          <h2 id="gallery">{t.game.gallery}</h2>
-          <div class="shots">
-            {g.gallery.map((item) => (
-              <figure>
-                <a href={item.image} target="_blank" rel="noopener">
-                  <img src={item.image} alt={item.caption ?? ''} loading="lazy" />
-                </a>
-                {item.caption && <figcaption class="muted">{item.caption}</figcaption>}
-              </figure>
-            ))}
+      areas.length > 0 && (
+        <section class="sec" id="role">
+          <h2>{t.game.sections.role}</h2>
+          <div class="areas">
+            {areas.map((area) => <AreaSection game={game} area={area} compact={hasStudy} />)}
           </div>
         </section>
       )
     }
+
+    {
+      study?.highlights && (
+        <section class="sec" id="highlights">
+          <h2>{t.caseStudy.sections.highlights}</h2>
+          {study.intro && <div class="prose" set:html={study.intro} />}
+          <CaseStudy sections={[study.highlights]} titles={false} />
+        </section>
+      )
+    }
+    {
+      decisions.length > 0 && (
+        <section class="sec" id="decisions">
+          <h2>{t.game.sections.decisions}</h2>
+          <CaseStudy sections={decisions} />
+        </section>
+      )
+    }
+    {
+      hood.length > 0 && (
+        <section class="sec" id="hood">
+          <h2>{t.game.sections.hood}</h2>
+          <CaseStudy sections={hood} />
+        </section>
+      )
+    }
+    {
+      study?.timeline && (
+        <section class="sec" id="timeline">
+          <h2>{t.caseStudy.sections.timeline}</h2>
+          <CaseStudy sections={[study.timeline]} titles={false} />
+        </section>
+      )
+    }
+    {
+      extras.map((x, i) => (
+        <section class="sec" id={`more-${i + 1}`}>
+          <h2>{x.key ? t.caseStudy.sections[x.key] : x.name}</h2>
+          <CaseStudy sections={[x]} titles={false} />
+        </section>
+      ))
+    }
   </article>
 </Base>
+
+<script>
+  // Highlight the summary link of the section being read.
+  const links = new Map<string, HTMLAnchorElement>();
+  document.querySelectorAll<HTMLAnchorElement>('.toc a').forEach((a) => links.set(a.hash.slice(1), a));
+  const sections = [...links.keys()].map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
+
+  function update() {
+    // The current section is the last one whose top has passed under the sticky bars.
+    const line = 140;
+    let current = sections[0];
+    for (const el of sections) if (el.getBoundingClientRect().top <= line) current = el;
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 2) current = sections[sections.length - 1];
+    links.forEach((a, id) => {
+      const on = id === current?.id;
+      if (on && !a.hasAttribute('aria-current')) a.parentElement?.parentElement?.scrollTo({ left: a.offsetLeft - 16, behavior: 'smooth' });
+      a.toggleAttribute('aria-current', on);
+    });
+  }
+  addEventListener('scroll', update, { passive: true });
+  update();
+</script>
 
 <style>
   .back {
@@ -147,6 +240,75 @@ const facts = [
   .top {
     display: grid;
     gap: 28px;
+  }
+  /* Sections stop below the site header and the summary bar when jumped to. */
+  .sec {
+    scroll-margin-top: 130px;
+  }
+  .sec + .sec,
+  .team + .sec,
+  .facts + .sec {
+    margin-top: 48px;
+  }
+  .sec > h2 {
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .toc {
+    position: sticky;
+    top: 61px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 28px calc(var(--gutter) * -1) 0;
+    padding: 10px var(--gutter);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-block: 1px solid var(--border);
+  }
+  .toc-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  @media (max-width: 560px) {
+    .toc-label {
+      display: none;
+    }
+  }
+  .toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 6px;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: relative;
+  }
+  .toc a {
+    display: block;
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    color: var(--muted);
+    font-size: 0.88rem;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .toc a:hover {
+    color: var(--text);
+  }
+  .toc a[aria-current] {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
   }
   .skills {
     margin-bottom: 18px;
@@ -176,7 +338,7 @@ const facts = [
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr));
     gap: 16px 24px;
     padding: 20px 24px;
-    margin: 32px 0;
+    margin: 24px 0 32px;
   }
   dt {
     font-size: 0.8rem;
@@ -207,7 +369,7 @@ const facts = [
   }
   .trailer {
     aspect-ratio: 16 / 9;
-    margin-bottom: 32px;
+    margin-bottom: 18px;
   }
   .trailer iframe {
     width: 100%;
@@ -218,9 +380,6 @@ const facts = [
   .areas {
     display: grid;
     gap: 24px;
-  }
-  .gallery {
-    margin-top: 40px;
   }
   figure {
     margin: 0;

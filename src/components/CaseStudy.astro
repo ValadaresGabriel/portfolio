@@ -1,25 +1,22 @@
 ---
 import { t } from '../i18n/en';
-import type { CaseStudy, Section } from '../lib/case-study';
+import type { Section } from '../lib/case-study';
 
 interface Props {
-  study: CaseStudy;
+  sections: Section[];
+  /** Hide the per-section titles when the page heading already names the section. */
+  titles?: boolean;
 }
 
-const { study } = Astro.props;
+const { sections, titles = true } = Astro.props;
 const title = (s: Section) => (s.key ? t.caseStudy.sections[s.key] : s.name);
-// One read, top to bottom: the strongest material first.
-const sections = [study.highlights, study.timeline, ...study.others].filter((s): s is Section => !!s);
 ---
 
-<section class="case-study" aria-labelledby="case-study">
-  <h2 id="case-study">{t.caseStudy.title}</h2>
-  {study.intro && <div class="prose" set:html={study.intro} />}
-
+<div class="case-study">
   {
     sections.map((section) => (
       <div class="block">
-        <h3>{title(section)}</h3>
+        {titles && <h3>{title(section)}</h3>}
         {section.items ? (
           <ul class="entries">
             {section.items.map((item) => (
@@ -48,11 +45,10 @@ const sections = [study.highlights, study.timeline, ...study.others].filter((s):
       </div>
     ))
   }
-</section>
+</div>
 
 <style>
   .case-study {
-    margin-top: 40px;
     display: grid;
     gap: 28px;
     min-width: 0;
