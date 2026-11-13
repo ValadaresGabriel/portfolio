@@ -1,5 +1,7 @@
 # Importação de PORTFOLIO.md
 
+> O formato do corpo mudou: veja [case-study-v2.md](case-study-v2.md). Highlights, Decisions (opcional) e Skills substituem as sete seções descritas abaixo.
+
 ## Objetivo
 Importar no `/admin` o `PORTFOLIO.md` gerado pela skill `/game-portfolio` para um jogo que já existe no site. A importação preenche a área Programming, os créditos e o estudo de caso, e a página do jogo passa a mostrar os créditos e o estudo de caso.
 

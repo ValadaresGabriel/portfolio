@@ -5,9 +5,11 @@
 
 export const IMPORT_FIELD = 'portfolioImport';
 
-export const SECTIONS = [
-  'Timeline', 'Architecture', 'Decisions', 'Challenges', 'Code evolution', 'Skills', 'Highlights',
-];
+// The body's H2 sections, in order. Decisions is the only optional one.
+export const SECTIONS = ['Highlights', 'Decisions', 'Skills'];
+const OPTIONAL = ['Decisions'];
+// The labelled lines under each "### Title" in Highlights, in order.
+export const HIGHLIGHT_LABELS = ['Goal', 'Process', 'Why', 'Result'];
 
 const ENUMS = {
   type: ['studio', 'personal', 'game-jam', 'academic'],
@@ -126,25 +128,56 @@ function textList(v, name, errors) {
   return items;
 }
 
-// The body must have the template's H2 sections, all of them, in order.
+// The body must have the template's H2 sections, in order, each in its item format.
 function checkSections(body) {
-  const found = [];
+  const chunks = [];
   let fenced = false;
   for (const line of body.split('\n')) {
     if (/^\s*(```|~~~)/.test(line)) fenced = !fenced;
     const h = !fenced && line.match(/^##\s+(.+?)\s*#*\s*$/);
-    if (h) found.push(h[1]);
+    if (h) chunks.push({ name: h[1], lines: [] });
+    else if (chunks.length && line.trim()) chunks[chunks.length - 1].lines.push(line.trim());
   }
+  const found = chunks.map((c) => c.name);
   const errors = [];
   for (const name of found) {
     if (!SECTIONS.includes(name)) errors.push(`Section "## ${name}" is not part of the template.`);
   }
-  const missing = SECTIONS.filter((s) => !found.includes(s));
+  const missing = SECTIONS.filter((s) => !OPTIONAL.includes(s) && !found.includes(s));
   if (missing.length) errors.push(`Missing section${missing.length > 1 ? 's' : ''}: ${missing.map((s) => `"## ${s}"`).join(', ')}.`);
   const known = found.filter((s) => SECTIONS.includes(s));
   const expected = SECTIONS.filter((s) => known.includes(s));
   if (known.join('|') !== expected.join('|')) errors.push(`Sections are out of order; expected: ${SECTIONS.join(', ')}.`);
+  for (const chunk of chunks) errors.push(...checkItems(chunk.name, chunk.lines));
   return errors;
+}
+
+function checkItems(name, lines) {
+  if (name === 'Highlights') {
+    const items = [];
+    for (const line of lines) {
+      const h = line.match(/^### (.+)$/);
+      if (h) items.push({ title: h[1], lines: [] });
+      else if (items.length) items[items.length - 1].lines.push(line);
+      else return [`Unexpected line in "## Highlights" before the first "### Title": ${line}`];
+    }
+    if (!items.length) return ['"## Highlights" has no "### Title" items.'];
+    const expected = HIGHLIGHT_LABELS.map((l) => `"- **${l}:**"`).join(', ');
+    return items
+      .filter((item) => item.lines.length !== HIGHLIGHT_LABELS.length || item.lines.some((l, i) => !l.startsWith(`- **${HIGHLIGHT_LABELS[i]}:** `)))
+      .map((item) => `Highlight "${item.title}" must have exactly the lines ${expected}, in that order.`);
+  }
+  if (name === 'Decisions') {
+    const bad = lines.find((l) => !/^- \*\*.+?:\*\* \S/.test(l));
+    if (bad) return [`Each line in "## Decisions" must be "- **Decision:** text"; found: ${bad}`];
+    if (!lines.length) return ['"## Decisions" is empty; remove the section when there are no decisions.'];
+  }
+  if (name === 'Skills') {
+    const bad = lines.find((l) => !/^- [^*\s]/.test(l) || l.includes(':**'));
+    if (bad) return [`Each line in "## Skills" must be a plain "- Tag"; found: ${bad}`];
+    if (!lines.length) return ['"## Skills" is empty.'];
+  }
+  return [];
 }
 
 /**

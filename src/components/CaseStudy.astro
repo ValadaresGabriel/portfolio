@@ -3,65 +3,47 @@ import { t } from '../i18n/en';
 import type { Section } from '../lib/case-study';
 
 interface Props {
-  sections: Section[];
-  /** Hide the per-section titles when the page heading already names the section. */
-  titles?: boolean;
+  section: Section;
 }
 
-const { sections, titles = true } = Astro.props;
-const title = (s: Section) => (s.key ? t.caseStudy.sections[s.key] : s.name);
+const { section } = Astro.props;
 ---
 
 <div class="case-study">
   {
-    sections.map((section) => (
-      <div class="block">
-        {titles && <h3>{title(section)}</h3>}
-        {section.items ? (
-          <ul class="entries">
-            {section.items.map((item) => (
-              <li>
-                <strong set:html={item.title} />
-                {item.date && <span class="muted"> · {item.date}</span>}
-                {(item.text || item.details.length > 0 || item.fields.length > 0) && (
-                  <ul>
-                    {item.text && <li set:html={item.text} />}
-                    {item.details.map((d) => (
-                      <li set:html={d} />
-                    ))}
-                    {item.fields.map((f) => (
-                      <li>
-                        <span class="label">{t.caseStudy.labels[f.label]}:</span> <Fragment set:html={f.html} />
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div class="prose" set:html={section.html} />
+    section.items ? (
+      <ul class="entries">
+        {section.items.map((item) =>
+          item.fields.length > 0 ? (
+            <li>
+              <strong set:html={item.title} />
+              <ul>
+                {item.fields.map((f) => (
+                  <li>
+                    <span class="label">{t.caseStudy.labels[f.label]}:</span> <Fragment set:html={f.html} />
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ) : (
+            <li>
+              <strong set:html={`${item.title}:`} /> <Fragment set:html={item.text} />
+            </li>
+          ),
         )}
-      </div>
-    ))
+      </ul>
+    ) : (
+      <div class="prose" set:html={section.html} />
+    )
   }
 </div>
 
 <style>
   .case-study {
-    display: grid;
-    gap: 28px;
     min-width: 0;
   }
-  .case-study > *,
-  .block > * {
+  .case-study > * {
     min-width: 0;
-  }
-  h3 {
-    color: var(--accent);
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
   }
   .label {
     font-weight: 600;

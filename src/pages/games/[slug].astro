@@ -21,12 +21,9 @@ const areas = gameAreas(game);
 const trailerId = youtubeId(g.links.trailer);
 const study = await parseCaseStudy(game.body);
 const skills = study?.skills?.items ?? [];
-const byKey = (...keys: string[]) => (study?.others ?? []).filter((x) => x.key && keys.includes(x.key));
-const decisions = byKey('decisions', 'challenges');
-const hood = byKey('architecture', 'codeEvolution');
 // Anything outside the template (hand-edited in the CMS) keeps its own heading.
-const extras = (study?.others ?? []).filter((x) => !decisions.includes(x) && !hood.includes(x));
-const hasStudy = Boolean(study?.highlights || study?.timeline || decisions.length || hood.length);
+const extras = study?.others ?? [];
+const hasStudy = Boolean(study?.highlights);
 const hasMedia = Boolean(trailerId) || g.gallery.length > 0;
 
 // The page outline, in reading order. It drives both the sections and the summary bar.
@@ -35,10 +32,8 @@ const outline = [
   { id: 'media', label: t.game.sections.media, show: hasMedia },
   { id: 'role', label: t.game.sections.role, show: areas.length > 0 },
   { id: 'highlights', label: t.caseStudy.sections.highlights, show: Boolean(study?.highlights) },
-  { id: 'decisions', label: t.game.sections.decisions, show: decisions.length > 0 },
-  { id: 'hood', label: t.game.sections.hood, show: hood.length > 0 },
-  { id: 'timeline', label: t.caseStudy.sections.timeline, show: Boolean(study?.timeline) },
-  ...extras.map((x, i) => ({ id: `more-${i + 1}`, label: x.key ? t.caseStudy.sections[x.key] : x.name, show: true })),
+  { id: 'decisions', label: t.caseStudy.sections.decisions, show: Boolean(study?.decisions) },
+  ...extras.map((x, i) => ({ id: `more-${i + 1}`, label: x.name, show: true })),
 ].filter((x) => x.show);
 
 const facts = [
@@ -162,39 +157,23 @@ const facts = [
         <section class="sec" id="highlights">
           <h2>{t.caseStudy.sections.highlights}</h2>
           {study.intro && <div class="prose" set:html={study.intro} />}
-          <CaseStudy sections={[study.highlights]} titles={false} />
+          <CaseStudy section={study.highlights} />
         </section>
       )
     }
     {
-      decisions.length > 0 && (
+      study?.decisions && (
         <section class="sec" id="decisions">
-          <h2>{t.game.sections.decisions}</h2>
-          <CaseStudy sections={decisions} />
-        </section>
-      )
-    }
-    {
-      hood.length > 0 && (
-        <section class="sec" id="hood">
-          <h2>{t.game.sections.hood}</h2>
-          <CaseStudy sections={hood} />
-        </section>
-      )
-    }
-    {
-      study?.timeline && (
-        <section class="sec" id="timeline">
-          <h2>{t.caseStudy.sections.timeline}</h2>
-          <CaseStudy sections={[study.timeline]} titles={false} />
+          <h2>{t.caseStudy.sections.decisions}</h2>
+          <CaseStudy section={study.decisions} />
         </section>
       )
     }
     {
       extras.map((x, i) => (
         <section class="sec" id={`more-${i + 1}`}>
-          <h2>{x.key ? t.caseStudy.sections[x.key] : x.name}</h2>
-          <CaseStudy sections={[x]} titles={false} />
+          <h2>{x.name}</h2>
+          <CaseStudy section={x} />
         </section>
       ))
     }

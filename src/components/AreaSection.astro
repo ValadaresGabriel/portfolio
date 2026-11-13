@@ -5,7 +5,7 @@ import type { Area, Game } from '../lib/content';
 interface Props {
   game: Game;
   area: Area;
-  /** Hide highlights, systems and the challenge: the case study covers them. */
+  /** Hide highlights and the challenge: the case study Highlights cover them. */
   compact?: boolean;
 }
 
@@ -108,7 +108,7 @@ const base = (prod ?? narr ?? prog)!;
   {
     prog && (prog.systems.length > 0 || prog.languages.length > 0) && (
       <div class="cols">
-        {!compact && prog.systems.length > 0 && (
+        {prog.systems.length > 0 && (
           <div>
             <h3>{t.game.systems}</h3>
             <ul>{prog.systems.map((s) => <li>{s}</li>)}</ul>

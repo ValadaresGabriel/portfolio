@@ -192,4 +192,4 @@ collections:
             default: plaintext
             options: [csharp, cpp, c, gdscript, lua, python, javascript, typescript, hlsl, glsl, java, rust, plaintext]
 
-      - { label: Case study, name: body, widget: markdown, required: false, hint: "Sections from PORTFOLIO.md: Timeline, Architecture, Decisions, Challenges, Code evolution, Skills, Highlights" }
+      - { label: Case study, name: body, widget: markdown, required: false, hint: "Sections from PORTFOLIO.md: Highlights, Decisions (optional), Skills" }

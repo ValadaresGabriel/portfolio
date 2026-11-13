@@ -1,5 +1,7 @@
 # Arquitetura da página do jogo
 
+> Atualizada pela [case-study-v2.md](case-study-v2.md): o estudo de caso agora tem só Highlights, Decisions e Skills.
+
 ## Objetivo
 Reorganizar a página do jogo para que um recrutador veja de relance o que ela contém e pule direto para o que interessa: um sumário clicável e as seções em ordem do mais rápido de ver para o mais detalhado.
 
@@ -16,16 +18,14 @@ Reorganizar a página do jogo para que um recrutador veja de relance o que ela c
 1. **Overview**: capa, selos das áreas, título, pitch, descrição, tags de skills, links, dados do jogo e time.
 2. **Media**: trailer e prints (a galeria).
 3. **My role**: um cartão por área preenchida.
-4. **Highlights**: os casos com Problem, Solution e Result.
-5. **Decisions & challenges**: as seções Decisions e Challenges do estudo de caso.
-6. **Under the hood**: Architecture e Code evolution.
-7. **Timeline**.
+4. **Highlights**: os casos com Goal, Process, Why e Result.
+5. **Decisions**: uma linha por decisão.
 - Uma seção sem conteúdo não aparece, nem na página nem no sumário.
-- Seções do estudo de caso fora do formato da skill (editadas à mão) aparecem depois da Timeline, com o próprio título, e também entram no sumário.
+- Seções do estudo de caso fora do formato da skill (editadas à mão) aparecem depois de Decisions, com o próprio título, e também entram no sumário.
 - A página continua em coluna única.
 
 ### Conteúdo repetido
-- Quando o jogo tem estudo de caso, o cartão da área Programming mostra só contribuição, responsabilidades, linguagens, ferramentas e evidências. Destaques, sistemas e desafio técnico não aparecem.
+- Quando o jogo tem estudo de caso, o cartão da área Programming esconde destaques e desafio técnico, que repetem os Highlights. Os sistemas aparecem.
 - Sem estudo de caso, o cartão continua completo.
 - Nenhum campo sai do CMS nem da importação.
 
@@ -38,7 +38,7 @@ Reorganizar a página do jogo para que um recrutador veja de relance o que ela c
 - [x] Na página do Action Adventurer, o sumário lista só as seções existentes, na ordem acima.
 - [x] Clicar em cada link do sumário leva à seção certa, com o título visível.
 - [x] Ao rolar, a barra fica presa no topo e o link da seção atual fica destacado.
-- [x] O cartão Programming não mostra destaques, sistemas nem desafio técnico quando há estudo de caso.
+- [x] O cartão Programming esconde destaques e desafio técnico quando há estudo de caso, e mostra os sistemas.
 - [x] Nenhuma rolagem horizontal na página em 360px de largura.
 
 ## Tarefas
