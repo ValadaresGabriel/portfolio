@@ -1,7 +1,7 @@
 ---
 name: Gabriel Valadares
 title: Game Developer
-photo: /uploads/example-photo.svg
+photo: /uploads/95bd8bfb-85c0-484f-b58e-23cdcb5e86f2 cropped.jpg
 banner: /uploads/profile-cover.png
 location: ''
 shortBio: Game developer who plans the work, writes the story and codes the systems that make players care.
@@ -33,7 +33,5 @@ email: Gabriu10@gmail.com
 links:
   - label: LinkedIn
     url: https://www.linkedin.com/in/gabriel-pacini-valadares/
-  - label: GitHub
-    url: https://github.com/ValadaresGabriel
 cv: /uploads/example-cv.pdf
 ---
