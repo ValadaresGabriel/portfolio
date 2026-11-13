@@ -55,9 +55,6 @@ const facts = [
     <header class="top sec" id="overview">
       <img class="cover" src={g.cover} alt="" width="1200" height="675" />
       <div class="intro">
-        <ul class="chips">
-          {areas.map((a) => <li><a class="area-badge" data-area={a} href={`#${a}`}>{t.areaShort[a]}</a></li>)}
-        </ul>
         <h1>{g.title}</h1>
         <p class="pitch">{g.pitch}</p>
         {g.description && <p class="muted">{g.description}</p>}
@@ -302,12 +299,6 @@ const facts = [
     object-fit: cover;
     border-radius: var(--radius);
     border: 1px solid var(--border);
-  }
-  .intro .chips {
-    margin-bottom: 12px;
-  }
-  .intro .area-badge {
-    text-decoration: none;
   }
   .pitch {
     font-size: 1.15rem;

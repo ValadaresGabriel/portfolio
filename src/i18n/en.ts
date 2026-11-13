@@ -12,7 +12,6 @@ export const t = {
     openToWork: 'Open to work',
     whatIDo: 'What I do',
     projects: 'My projects',
-    seeWork: (area: string) => `See ${area} work`,
     allGames: 'See all games',
     contact: 'Get in touch',
     downloadCv: 'Download CV',
