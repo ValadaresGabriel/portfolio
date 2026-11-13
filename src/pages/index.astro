@@ -3,7 +3,7 @@ import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import GameCard from '../components/GameCard.astro';
 import { t } from '../i18n/en';
-import { AREAS, getGames, getProfile, hasArea } from '../lib/content';
+import { AREAS, getGames, getProfile } from '../lib/content';
 
 const profile = await getProfile();
 const p = profile.data;
@@ -11,8 +11,6 @@ const { Content: About } = await render(profile);
 const hasAbout = Boolean(profile.body?.trim());
 const games = await getGames();
 const featured = games.filter((g) => g.data.featured);
-// Each area card shows a game with work in that area, featured games first.
-const areaGame = (area: (typeof AREAS)[number]) => [...featured, ...games].find((g) => hasArea(g, area));
 ---
 
 <Base>
@@ -39,17 +37,13 @@ const areaGame = (area: (typeof AREAS)[number]) => [...featured, ...games].find(
     <div class="areas">
       {
         AREAS.map((area) => {
-          const game = areaGame(area);
           return (
-            <div class="area card" data-area={area}>
-              {game && <img src={game.data.cover} alt={game.data.title} loading="lazy" width="1200" height="675" />}
-              <div class="area-body">
-                <h3>{t.areas[area]}</h3>
-                {p.areas[area].summary && <p>{p.areas[area].summary}</p>}
-                {p.areas[area].tools.length > 0 && (
-                  <ul class="chips">{p.areas[area].tools.map((tool) => <li class="chip">{tool}</li>)}</ul>
-                )}
-              </div>
+            <div class="area" data-area={area}>
+              <h3>{t.areas[area]}</h3>
+              {p.areas[area].summary && <p>{p.areas[area].summary}</p>}
+              {p.areas[area].tools.length > 0 && (
+                <ul class="chips">{p.areas[area].tools.map((tool) => <li class="chip">{tool}</li>)}</ul>
+              )}
             </div>
           );
         })
@@ -153,29 +147,15 @@ const areaGame = (area: (typeof AREAS)[number]) => [...featured, ...games].find(
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   }
   .area {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    border-top: 3px solid var(--c);
-  }
-  .area img {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    background: var(--surface-2);
-  }
-  .area-body {
-    padding: 22px;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-  .area .chips {
-    margin-bottom: 20px;
+    padding-top: 14px;
+    border-top: 2px solid var(--c);
   }
   .area h3 {
     margin-top: 0;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
+  }
+  .area p {
+    color: var(--muted);
   }
   .head {
     display: flex;
